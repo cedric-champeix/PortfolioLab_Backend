@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+.env
+docker-compose.yml
+mongodb_rs
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
