@@ -10,7 +10,12 @@ app.use(bodyParser.urlencoded({
 }))
 
 const authRoutes = require("./api/auth")
+const resumeRoutes = require("./api/editor/resume")
+const projectRoutes = require("./api/editor/project")
+
 app.use("/", authRoutes)
+app.use("/editor", resumeRoutes)
+app.use("/editor", projectRoutes)
 
 
 app.listen(config.PORT)
