@@ -2,7 +2,7 @@
   "name": "portfoliolab",
   "version": "1.0.0",
   "description": "The goal of this project is to create a CMS specialized in creating e-portfolios to help students present their skills.",
-  "main": "index.js",
+  "main": "src/backend/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,12 +17,18 @@
   },
   "homepage": "https://github.com/TAGjoker534/PortfolioLab#readme",
   "dependencies": {
+    "@prisma/client": "^5.5.2",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.0",
     "prisma": "^5.5.2"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "eslint": "^8.53.0",
+    "nodemon": "^3.0.1",
+    "prettier": "^3.1.0"
   }
 }
