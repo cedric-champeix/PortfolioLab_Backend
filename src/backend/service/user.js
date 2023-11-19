@@ -5,18 +5,21 @@ const {NB_SALT_ROUNDS} = require("../config")
 
 module.exports = {
     create: async (req, res) => {
-        const data = req.body
-        let salt = await bcrypt.genSalt(NB_SALT_ROUNDS)
-        let hashedPwd = await bcrypt.hash(data.pwd, salt)
-
         try {
+            const data = req.body
+            let salt = await bcrypt.genSalt(NB_SALT_ROUNDS)
+            let hashedPwd = await bcrypt.hash(data.pwd, salt)
+
             const user = await prisma.user.create({
                 data: {
                     email: data.email,
                     pwd: hashedPwd,
                     firstName: data.firstName,
                     lastName: data.lastName,
-                    role: Roles.Editor
+                    role: Roles.Editor,
+                    resume: {
+                        create: {}
+                    }
                 },
             })
 
