@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -32,7 +29,8 @@ model Project {
   imgURL       String?
   contentURL   String?
   contributors String[]
-  skills       Skill[]
+  Skills       Skill[]  @relation(fields: [skillIds], references: [id])
+  skillIds     String[] @db.ObjectId
   User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String   @db.ObjectId
 }
@@ -53,14 +51,14 @@ model Resume {
 model Skill {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   name        String
-  descritpion String
+  description String?
   mastery     String
-  logoURL     String
+  logoURL     String?
   isSoft      Boolean
   Resume      Resume?  @relation(fields: [resumeId], references: [id], onDelete: SetNull)
   resumeId    String?  @db.ObjectId
-  Project     Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
-  projectId   String?  @db.ObjectId
+  Projects     Project[] @relation(fields: [projectsIds], references: [id])
+  projectsIds   String[]  @db.ObjectId
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String   @db.ObjectId
 
@@ -73,8 +71,8 @@ model Experience {
   company     String
   logoURL     String?
   description String
-  startDate   DateTime
-  endDate     DateTime?
+  startDate   String
+  endDate     String?
   Resume      Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
   resumeId    String    @db.ObjectId
 
@@ -86,7 +84,7 @@ model Formations {
   formationName  String
   universityName String
   level          String
-  logoURL        String
+  logoURL        String?
   Resume         Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
   resumeId       String @db.ObjectId
 
@@ -96,7 +94,7 @@ model Formations {
 model Social {
   id       String  @id @default(auto()) @map("_id") @db.ObjectId
   name     String
-  logoURL  String
+  logoURL  String?
   link     String
   Resume   Resume? @relation(fields: [resumeId], references: [id], onDelete: SetNull)
   resumeId String? @db.ObjectId
