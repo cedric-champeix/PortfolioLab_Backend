@@ -7,12 +7,13 @@ module.exports = {
     create: async (req, res) => {
         try {
             const data = req.body
-            let salt = await bcrypt.genSalt(NB_SALT_ROUNDS)
+            const salt = await bcrypt.genSalt(NB_SALT_ROUNDS)
             let hashedPwd = await bcrypt.hash(data.pwd, salt)
 
             const user = await prisma.user.create({
                 data: {
                     email: data.email,
+                    username: data.username,
                     pwd: hashedPwd,
                     firstName: data.firstName,
                     lastName: data.lastName,
@@ -25,7 +26,7 @@ module.exports = {
 
             delete user.pwd
 
-            let options = {
+            const options = {
                 maxAge: 24 * 60 * 60 * 1000,
                 httpOnly: true,
                 secure: true,
@@ -63,7 +64,7 @@ module.exports = {
 
             delete user.pwd
 
-            let options = {
+            const options = {
                 maxAge: 24 * 60 * 60 * 1000,
                 httpOnly: true,
                 secure: true,
