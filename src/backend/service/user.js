@@ -84,18 +84,6 @@ module.exports = {
         }
 
 
-    },
-
-    logout: (req, res) => {
-
-    },
-
-    getInfos: () => {
-
-    },
-
-    getAllProjects: () => {
-
     }
 }
 
