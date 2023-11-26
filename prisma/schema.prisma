@@ -29,7 +29,7 @@ model Project {
   imgURL       String?
   contentURL   String?
   contributors String[]
-  Skills       Skill[]  @relation(fields: [skillIds], references: [id])
+  skills       Skill[]  @relation(fields: [skillIds], references: [id])
   skillIds     String[] @db.ObjectId
   User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String   @db.ObjectId
