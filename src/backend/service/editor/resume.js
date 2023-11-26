@@ -116,5 +116,97 @@ module.exports = {
         } catch (e) {
             return res.status(500).json({message: "Couldn't reset resume."})
         }
+    },
+
+    connectSkill: async (req, res) => {
+        try {
+            const user = req.user
+            const skillId = req.params.skillId
+
+            await prisma.resume.update({
+                where: {
+                    userId: user.id
+                },
+                data: {
+                    skills: {
+                        connect: {id: skillId}
+                    }
+                }
+            })
+
+            return res.sendStatus(200)
+
+        } catch (e) {
+            return res.status(500).json({message: "Couldn't connect skill."})
+        }
+    },
+
+    disconnectSkill: async (req, res) => {
+        try {
+            const user = req.user
+            const skillId = req.params.skillId
+
+            await prisma.resume.update({
+                where: {
+                    userId: user.id,
+                },
+                data: {
+                    skills: {
+                        disconnect: {id: skillId}
+                    }
+                }
+            })
+
+            return res.sendStatus(200)
+
+        } catch (e) {
+            return res.status(500).json({message: "Couldn't disconnect skill."})
+        }
+    },
+
+    connectSocial: async (req, res) => {
+        try {
+            const user = req.user
+            const socialId = req.params.socialId
+
+            await prisma.resume.update({
+                where: {
+                    userId: user.id
+                },
+                data: {
+                    socials: {
+                        connect: {id: socialId}
+                    }
+                }
+            })
+
+            return res.sendStatus(200)
+
+        } catch (e) {
+            return res.status(500).json({message: "Couldn't connect social media."})
+        }
+    },
+
+    disconnectSocial: async (req, res) => {
+        try {
+            const user = req.user
+            const socialId = req.params.socialId
+
+            await prisma.resume.update({
+                where: {
+                    userId: user.id,
+                },
+                data: {
+                    socials: {
+                        disconnect: {id: socialId}
+                    }
+                }
+            })
+
+            return res.sendStatus(200)
+
+        } catch (e) {
+            return res.status(500).json({message: "Couldn't disconnect social media."})
+        }
     }
 }
