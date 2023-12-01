@@ -28,9 +28,8 @@ module.exports = {
 
             const options = {
                 maxAge: 24 * 60 * 60 * 1000,
-                httpOnly: true,
-                secure: true,
-                sameSite: true,
+                httpOnly: false,
+                withCredentials: true
             }
             const accessToken = generateAccessToken(user)
 
@@ -66,9 +65,8 @@ module.exports = {
 
             const options = {
                 maxAge: 24 * 60 * 60 * 1000,
-                httpOnly: true,
-                secure: true,
-                sameSite: true,
+                httpOnly: false,
+                withCredentials: true
             }
             const accessToken = generateAccessToken(user)
 
