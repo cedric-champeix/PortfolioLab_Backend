@@ -3,16 +3,21 @@ const config = require("./config")
 const bodyParser = require("body-parser")
 const cookieParser = require('cookie-parser')
 const cors = require("cors")
+const path = require("path");
 
-const app = express ()
-
+const app = express()
 app.use(bodyParser.json())
+
 app.use(bodyParser.urlencoded({
     extended: true
 }))
-
 app.use(cookieParser())
-app.use(cors({origin: config.REACT_URL}))
+
+app.use(cors({
+    origin: config.REACT_URL,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+}))
 
 const authRoutes = require("./api/auth")
 const resumeRoutes = require("./api/editor/resume")
@@ -26,5 +31,6 @@ app.use("/editor", skillRoutes)
 app.use("/editor", socialRoutes)
 app.use("/editor", projectRoutes)
 
+app.use("/public", express.static(path.join(__dirname, '../../public')))
 
 app.listen(config.PORT)
