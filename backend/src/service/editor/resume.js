@@ -22,9 +22,11 @@ module.exports = {
                 }
             })
 
-            return res.status(200).json(resume)
+            console.log("Get resume: ", resume.resume)
+            return res.status(200).json(resume.resume)
 
         } catch (e) {
+            console.error(e)
             return res.status(500).json({message: "Couldn't get resume."})
         }
     },
@@ -34,51 +36,20 @@ module.exports = {
             const data = req.body
             const user = req.user
 
-            const keys = ["description", "languages", "hobbies", "formations", "experiences", "skills", "socials"]
+            let valuesToModify = {}
+            const acceptable_keys = ["description", "languages", "hobbies"]
 
-            for (const key in keys) {
-                if (!(key in data))
-                    data[key] = null
+            for (const key of acceptable_keys) {
+                if (key in data)
+                    valuesToModify[key] = data[key]
             }
 
-            const deleteRelatedRecords = prisma.resume.update({
+            const update = await prisma.resume.update({
                 where: {
                     userId: user.id
                 },
-                data: {
-                    formations: {
-                        deleteMany: {}
-                    },
-                    experiences: {
-                        deleteMany: {}
-                    }
-                }
+                data: valuesToModify
             })
-
-            const update = prisma.resume.update({
-                where: {
-                    userId: user.id
-                },
-                data: {
-                    description: data.description,
-                    languages: data.languages,
-                    hobbies: data.hobbies,
-                    formations: {
-                        create: data.formations
-                    },
-                    experiences: {
-                        create: data.experiences
-                    },
-                    skills: {
-                        set: data.skills
-                    },
-                    socials: {
-                        set: data.socials
-                    }
-                }
-            })
-
-            await prisma.$transaction([deleteRelatedRecords, update])
 
             return res.status(200).json({message: "The resume was updated successfully."})
         } catch (e) {

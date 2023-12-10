@@ -8,25 +8,28 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  email     String    @unique
-  username  String    @unique
-  pwd       String
-  role      String
-  firstName String
-  lastName  String
-  address   Address?
-  resume    Resume?
-  projects  Project[]
-  Skill     Skill[]
-  Social    Social[]
+  id         String       @id @default(auto()) @map("_id") @db.ObjectId
+  email      String       @unique
+  username   String       @unique
+  pwd        String
+  role       String
+  firstName  String
+  lastName   String
+  address    Address?
+  resume     Resume?
+  projects   Project[]
+  Skill      Skill[]
+  Social     Social[]
+  Formations Formations[]
+  Experience Experience[]
 }
 
 model Project {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   name         String
   description  String?
-  imgURL       String?
+  mainImgURL   String?
+  images       String[]
   contentURL   String?
   contributors String[]
   skills       Skill[]  @relation(fields: [skillIds], references: [id])
@@ -49,44 +52,48 @@ model Resume {
 }
 
 model Skill {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
   name        String
   description String?
   mastery     String
   logoURL     String?
   isSoft      Boolean
-  Resume      Resume?  @relation(fields: [resumeId], references: [id], onDelete: SetNull)
-  resumeId    String?  @db.ObjectId
-  Projects     Project[] @relation(fields: [projectsIds], references: [id])
-  projectsIds   String[]  @db.ObjectId
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String   @db.ObjectId
+  Resume      Resume?   @relation(fields: [resumeId], references: [id], onDelete: SetNull)
+  resumeId    String?   @db.ObjectId
+  Projects    Project[] @relation(fields: [projectsIds], references: [id])
+  projectsIds String[]  @db.ObjectId
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String    @db.ObjectId
 
   @@unique([name, userId])
 }
 
 model Experience {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   company     String
   logoURL     String?
   description String
   startDate   String
   endDate     String?
-  Resume      Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-  resumeId    String    @db.ObjectId
+  Resume      Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  resumeId    String  @db.ObjectId
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String  @db.ObjectId
 
   @@unique([title, resumeId])
 }
 
 model Formations {
-  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  id             String  @id @default(auto()) @map("_id") @db.ObjectId
   formationName  String
   universityName String
-  level          String
-  logoURL        String?
-  Resume         Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-  resumeId       String @db.ObjectId
+  startDate      String
+  endDate        String?
+  Resume         Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  resumeId       String  @db.ObjectId
+  user           User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String  @db.ObjectId
 
   @@unique([formationName, resumeId])
 }

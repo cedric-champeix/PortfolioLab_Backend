@@ -2,7 +2,7 @@
   "name": "portfoliolab",
   "version": "1.0.0",
   "description": "The goal of this project is to create a CMS specialized in creating e-portfolios to help students present their skills.",
-  "main": "src/backend/index.js",
+  "main": "backend/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

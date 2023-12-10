@@ -1,6 +1,6 @@
 const prisma = require("./client")
 const bcrypt = require("bcrypt")
-const {generateAccessToken, Roles} = require("../utils/jwt")
+const {generateAccessToken, Roles} = require("./auth/jwt")
 const {NB_SALT_ROUNDS} = require("../config")
 
 module.exports = {
@@ -34,6 +34,8 @@ module.exports = {
             const accessToken = generateAccessToken(user)
 
             res.cookie("jwt_token", accessToken, options)
+
+            console.log("Connection: ", user)
             return res.status(200).json({
                 status: true,
                 result: {
@@ -41,6 +43,7 @@ module.exports = {
                 },
             })
         } catch (e) {
+            console.error(e)
             return res.status(500).json({message: "Couldn't create account."})
         }
     },
@@ -71,6 +74,8 @@ module.exports = {
             const accessToken = generateAccessToken(user)
 
             res.cookie("jwt_token", accessToken, options)
+
+            console.log("Connection: ", user)
             return res.status(200).json({
                 status: true,
                 result: {
@@ -78,6 +83,7 @@ module.exports = {
                 },
             })
         } catch (e) {
+            console.error(e)
             res.status(500).json({message: "Internal Server Error"})
         }
 

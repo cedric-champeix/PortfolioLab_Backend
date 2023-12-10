@@ -16,7 +16,7 @@ app.use(cookieParser())
 app.use(cors({
     origin: config.REACT_URL,
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
+    credentials: true
 }))
 
 const authRoutes = require("./api/auth")

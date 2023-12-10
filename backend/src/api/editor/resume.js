@@ -1,6 +1,8 @@
 const app = require("express")
-const {getResume, updateResume, resetResume, connectSkill, disconnectSkill, connectSocial, disconnectSocial} = require("../../service/editor/resume");
-const {verifyAccessToken, Roles} = require("../../utils/jwt");
+const {
+    getResume, updateResume, resetResume, connectSkill, disconnectSkill, connectSocial, disconnectSocial
+} = require("../../service/editor/resume");
+const {verifyAccessToken, Roles} = require("../../service/auth/jwt");
 
 let router = new app.Router()
 

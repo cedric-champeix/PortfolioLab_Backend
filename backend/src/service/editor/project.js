@@ -145,6 +145,7 @@ module.exports = {
             return res.sendStatus(200)
 
         } catch (e) {
+            console.log(e)
             return res.status(500).json({message: "Couldn't connect skill."})
         }
     },

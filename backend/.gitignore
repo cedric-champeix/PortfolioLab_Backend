@@ -12,9 +12,9 @@ dist
 dist-ssr
 *.local
 
-.env
-docker-compose.yml
 mongodb_rs
+docker-compose.yml
+.env
 
 # Editor directories and files
 .vscode/*

@@ -70,9 +70,11 @@ module.exports = {
                 }
             })
 
+            console.log("Created skill: ", skill)
             return res.status(200).json(skill)
 
         } catch (e) {
+            console.error(e)
             return res.status(500).json({message: "Couldn't create skill."})
         }
     },
@@ -83,25 +85,26 @@ module.exports = {
             const skillId = req.params.skillId
 
             let valuesToModify = {}
-            const acceptable_keys = ["name", "description", "mastery", "soft"]
+            const acceptable_keys = ["name", "description", "mastery", "isSoft"]
 
             for (const key of acceptable_keys) {
                 if (key in data)
                     valuesToModify[key] = data[key]
             }
 
-
-
             const skill = await prisma.skill.update({
                 where: {
-                    id: skillId
+                    id: skillId,
+                    userId: req.user.id
                 },
                 data: valuesToModify
             })
 
+            console.log("Updated skill:", skill)
             return res.status(200).json(skill)
 
         } catch (e) {
+            console.error(e)
             return res.status(500).json({message: "Couldn't update skill."})
         }
     },
@@ -117,9 +120,11 @@ module.exports = {
                 }
             })
 
+            console.log(`Skill deleted: ${skillId}`)
             return res.sendStatus(200)
 
         } catch (e) {
+            console.error(e)
             return res.status(500).json({message: "Couldn't delete skill."})
         }
     },

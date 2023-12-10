@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken")
-const prisma = require("../service/client")
+const prisma = require("../client")
 
 module.exports = {
     verifyAccessToken: (requiredRole) => async (req, res, next) => {
