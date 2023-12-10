@@ -1,5 +1,5 @@
 const app = require("express")
-const {verifyAccessToken, Roles} = require("../../utils/jwt");
+const {verifyAccessToken, Roles} = require("../../service/auth/jwt");
 const {getAllSocials, getSocial, updateSocial, deleteSocial, createSocial} = require("../../service/editor/social");
 
 let router = new app.Router()
