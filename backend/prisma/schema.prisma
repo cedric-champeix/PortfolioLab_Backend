@@ -19,7 +19,7 @@ model User {
   resume     Resume?
   projects   Project[]
   Skill      Skill[]
-  Social     Social[]
+  Contact    Contact[]
   Formations Formations[]
   Experience Experience[]
 }
@@ -42,7 +42,7 @@ model Resume {
   id          String       @id @default(auto()) @map("_id") @db.ObjectId
   description String?
   skills      Skill[]
-  socials     Social[]
+  contacts    Contact[]
   experiences Experience[]
   formations  Formations[]
   languages   Language[]
@@ -98,17 +98,16 @@ model Formations {
   @@unique([formationName, resumeId])
 }
 
-model Social {
+model Contact {
   id       String  @id @default(auto()) @map("_id") @db.ObjectId
-  name     String
-  logoURL  String?
-  link     String
+  title    String
+  text     String
   Resume   Resume? @relation(fields: [resumeId], references: [id], onDelete: SetNull)
   resumeId String? @db.ObjectId
   user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId   String  @db.ObjectId
 
-  @@unique([name, userId])
+  @@unique([title, userId])
 }
 
 type Address {
