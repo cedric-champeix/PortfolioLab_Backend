@@ -14,7 +14,7 @@ module.exports = {
                         {
                             include: {
                                 skills: true,
-                                socials: true,
+                                contacts: true,
                                 experiences: true,
                                 formations: true
                             }
@@ -44,14 +44,14 @@ module.exports = {
                     valuesToModify[key] = data[key]
             }
 
-            const update = await prisma.resume.update({
+            const resume = await prisma.resume.update({
                 where: {
                     userId: user.id
                 },
                 data: valuesToModify
             })
 
-            return res.status(200).json({message: "The resume was updated successfully."})
+            return res.status(200).json(resume)
         } catch (e) {
             return res.status(500).json({message: "Couldn't update resume."})
         }
@@ -134,15 +134,15 @@ module.exports = {
     connectSocial: async (req, res) => {
         try {
             const user = req.user
-            const socialId = req.params.socialId
+            const contactId = req.params.contactId
 
             await prisma.resume.update({
                 where: {
                     userId: user.id
                 },
                 data: {
-                    socials: {
-                        connect: {id: socialId}
+                    contacts: {
+                        connect: {id: contactId}
                     }
                 }
             })
@@ -150,22 +150,22 @@ module.exports = {
             return res.sendStatus(200)
 
         } catch (e) {
-            return res.status(500).json({message: "Couldn't connect social media."})
+            return res.status(500).json({message: "Couldn't connect contact."})
         }
     },
 
     disconnectSocial: async (req, res) => {
         try {
             const user = req.user
-            const socialId = req.params.socialId
+            const contactId = req.params.contactId
 
             await prisma.resume.update({
                 where: {
                     userId: user.id,
                 },
                 data: {
-                    socials: {
-                        disconnect: {id: socialId}
+                    contacts: {
+                        disconnect: {id: contactId}
                     }
                 }
             })
@@ -173,7 +173,7 @@ module.exports = {
             return res.sendStatus(200)
 
         } catch (e) {
-            return res.status(500).json({message: "Couldn't disconnect social media."})
+            return res.status(500).json({message: "Couldn't disconnect contact."})
         }
     }
 }

@@ -15,7 +15,7 @@ router.route('/resume/skill/:skillId')
     .put(verifyAccessToken([Roles.Editor]), connectSkill)
     .delete(verifyAccessToken([Roles.Editor]), disconnectSkill)
 
-router.route('/resume/social/:socialId')
+router.route('/resume/social/:contactId')
     .put(verifyAccessToken([Roles.Editor]), connectSocial)
     .delete(verifyAccessToken([Roles.Editor]), disconnectSocial)
 
