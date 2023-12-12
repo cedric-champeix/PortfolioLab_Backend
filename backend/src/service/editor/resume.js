@@ -99,7 +99,7 @@ module.exports = {
                 throw new Error("No file provided.")
             }
 
-            const publicIndex = file.path.indexOf("/public/");
+            const publicIndex = file.path.indexOf("public/");
 
             if (publicIndex === -1) {
                 throw new Error("Path doesn't contain /public")
