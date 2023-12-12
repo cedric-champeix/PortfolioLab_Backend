@@ -35,6 +35,6 @@ app.use("/editor", experienceRoutes)
 app.use("/editor", formationRoutes)
 app.use("/editor", projectRoutes)
 
-app.use("/public", express.static(path.join(__dirname, '../../public')))
+app.use("/public", express.static(path.join(__dirname, '../public')))
 
 app.listen(config.PORT)

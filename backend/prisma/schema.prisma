@@ -41,6 +41,7 @@ model Project {
 model Resume {
   id          String       @id @default(auto()) @map("_id") @db.ObjectId
   description String?
+  image       String?
   skills      Skill[]
   contacts    Contact[]
   experiences Experience[]
