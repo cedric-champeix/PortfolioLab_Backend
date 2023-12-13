@@ -13,7 +13,7 @@ router.route('/resume')
     .delete(verifyAccessToken([Roles.Editor]), resetResume)
 
 router.route('/resume/image')
-    .post(verifyAccessToken([Roles.Editor]), uploadResumeImage.single(), uploadImage)
+    .post(verifyAccessToken([Roles.Editor]), uploadResumeImage.single("profilePicture"), uploadImage)
     .delete(verifyAccessToken([Roles.Editor]), deleteImage)
 
 router.route('/resume/skill/:skillId')

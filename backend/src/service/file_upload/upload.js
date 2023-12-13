@@ -13,8 +13,6 @@ const imageFilter = (req, file, cb) => {
     }
 }
 
-const resumeImage = "profilePicture"
-
 const projectFile = "project.md"
 const projectMainImage = "mainImage"
 const fileSize1Mo = 1000000
@@ -32,9 +30,6 @@ module.exports = {
                 }
 
                 cb(null, resumeFolder)
-            },
-            filename: (req, file, cb) => {
-                cb(null, resumeImage)
             }
         }),
         fileFilter: imageFilter,
