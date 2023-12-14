@@ -33,7 +33,7 @@ module.exports = {
             }
         }),
         fileFilter: imageFilter,
-        limits: {fileSize: fileSize1Mo}
+        limits: {fileSize: 5*fileSize1Mo}
     }),
 
     uploadProjectFile: multer({
