@@ -18,7 +18,9 @@ module.exports = {
                                 skills: true,
                                 contacts: true,
                                 experiences: true,
-                                formations: true
+                                formations: true,
+                                languages: true,
+                                hobbies: true
                             }
                         }
                 }
@@ -38,19 +40,13 @@ module.exports = {
             const data = req.body
             const user = req.user
 
-            let valuesToModify = {}
-            const acceptable_keys = ["description", "languages", "hobbies"]
-
-            for (const key of acceptable_keys) {
-                if (key in data)
-                    valuesToModify[key] = data[key]
-            }
-
             const resume = await prisma.resume.update({
                 where: {
                     userId: user.id
                 },
-                data: valuesToModify
+                data: {
+                    description: data.description
+                }
             })
 
             console.log("Update resume:", resume)

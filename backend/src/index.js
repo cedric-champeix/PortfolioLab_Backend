@@ -26,6 +26,8 @@ const contactRoutes = require("./api/editor/contact")
 const experienceRoutes = require("./api/editor/experience")
 const formationRoutes = require("./api/editor/formation")
 const projectRoutes = require("./api/editor/project")
+const languageRoutes = require("./api/editor/language")
+const hobbyRoutes = require("./api/editor/hobby")
 
 app.use("/", authRoutes)
 app.use("/editor", resumeRoutes)
@@ -34,6 +36,8 @@ app.use("/editor", contactRoutes)
 app.use("/editor", experienceRoutes)
 app.use("/editor", formationRoutes)
 app.use("/editor", projectRoutes)
+app.use("/editor", languageRoutes)
+app.use("/editor", hobbyRoutes)
 
 app.use("/public", express.static(path.join(__dirname, '../public')))
 
