@@ -6,13 +6,12 @@ let router = new app.Router()
 
 router.route("/skills")
     .get(verifyAccessToken([Roles.Editor]), getAllSkills)
+    .post(verifyAccessToken([Roles.Editor]), createSkill)
 
-router.route("/skill/:skillId")
+router.route("/skills/:skillId")
     .get(verifyAccessToken([Roles.Editor]), getSkill)
     .put(verifyAccessToken([Roles.Editor]), updateSkill)
     .delete(verifyAccessToken([Roles.Editor]), deleteSkill)
 
-router.route("/skill")
-    .post(verifyAccessToken([Roles.Editor]), createSkill)
 
 module.exports = router

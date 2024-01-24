@@ -6,13 +6,12 @@ let router = new app.Router()
 
 router.route("/contacts")
     .get(verifyAccessToken([Roles.Editor]), getAllContacts)
+    .post(verifyAccessToken([Roles.Editor]), createContact)
 
-router.route("/contact/:contactId")
+router.route("/contacts/:contactId")
     .get(verifyAccessToken([Roles.Editor]), getContact)
     .put(verifyAccessToken([Roles.Editor]), updateContact)
     .delete(verifyAccessToken([Roles.Editor]), deleteContact)
 
-router.route("/contact")
-    .post(verifyAccessToken([Roles.Editor]), createContact)
 
 module.exports = router

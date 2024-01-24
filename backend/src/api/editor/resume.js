@@ -16,11 +16,11 @@ router.route('/resume/image')
     .post(verifyAccessToken([Roles.Editor]), uploadResumeImage.single("profilePicture"), uploadImage)
     .delete(verifyAccessToken([Roles.Editor]), deleteImage)
 
-router.route('/resume/skill/:skillId')
+router.route('/resume/skills/:skillId')
     .put(verifyAccessToken([Roles.Editor]), connectSkill)
     .delete(verifyAccessToken([Roles.Editor]), disconnectSkill)
 
-router.route('/resume/social/:contactId')
+router.route('/resume/socials/:contactId')
     .put(verifyAccessToken([Roles.Editor]), connectSocial)
     .delete(verifyAccessToken([Roles.Editor]), disconnectSocial)
 

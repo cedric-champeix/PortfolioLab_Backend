@@ -6,13 +6,11 @@ let router = new app.Router()
 
 router.route("/formations")
     .get(verifyAccessToken([Roles.Editor]), getAllFormations)
+    .post(verifyAccessToken([Roles.Editor]), createFormation)
 
-router.route("/formation/:formationId")
+router.route("/formations/:formationId")
     .get(verifyAccessToken([Roles.Editor]), getFormations)
     .put(verifyAccessToken([Roles.Editor]), updateFormation)
     .delete(verifyAccessToken([Roles.Editor]), deleteFormation)
-
-router.route("/formation")
-    .post(verifyAccessToken([Roles.Editor]), createFormation)
 
 module.exports = router
