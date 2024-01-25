@@ -1,4 +1,4 @@
-const prisma = require("../client")
+const prisma = require("../../client")
 
 module.exports = {
 
@@ -37,6 +37,11 @@ module.exports = {
                     userId: user.id
                 },
                 include: {
+                    components: {
+                        orderBy: {
+                            index: 'asc'
+                        }
+                    },
                     skills: true
                 }
             })
@@ -44,6 +49,8 @@ module.exports = {
             return res.status(200).json(project)
 
         } catch (e) {
+            console.error("Error when accessing project: ", e)
+
             return res.status(500).json({message: "Couldn't get project."})
         }
     },
@@ -68,7 +75,7 @@ module.exports = {
 
             return res.status(200).json(project)
 
-        }catch (e) {
+        } catch (e) {
             return res.status(500).json({message: "Couldn't create project"})
         }
     },
@@ -120,15 +127,14 @@ module.exports = {
             })
 
             return res.sendStatus(200)
-        }catch (e) {
+        } catch (e) {
             return res.status(500).json({message: "Couldn't delete project."})
         }
     },
 
     connectSkill: async (req, res) => {
         try {
-            const projectId = req.params.myProjectId
-            const skillId = req.params.skillId
+            const {projectId, skillId} = req.params
 
             await prisma.project.update({
                 where: {
@@ -152,8 +158,7 @@ module.exports = {
 
     disconnectSkill: async (req, res) => {
         try {
-            const projectId = req.params.myProjectId
-            const skillId = req.params.skillId
+            const {projectId, skillId} = req.params
 
             await prisma.project.update({
                 where: {

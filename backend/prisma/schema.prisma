@@ -27,17 +27,25 @@ model User {
 }
 
 model Project {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
   name         String
   description  String?
   mainImgURL   String?
-  images       String[]
-  contentURL   String?
+  components   Component[]
   contributors String[]
-  skills       Skill[]  @relation(fields: [skillIds], references: [id])
-  skillIds     String[] @db.ObjectId
-  User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId       String   @db.ObjectId
+  skills       Skill[]     @relation(fields: [skillIds], references: [id])
+  skillIds     String[]    @db.ObjectId
+  User         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String      @db.ObjectId
+}
+
+model Component {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  type      String
+  index     Int
+  data      Json
+  Project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String?  @db.ObjectId
 }
 
 model Resume {

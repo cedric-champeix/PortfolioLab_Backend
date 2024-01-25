@@ -21,6 +21,8 @@ app.use(cors({
 
 const authRoutes = require("./api/auth")
 const resumeRoutes = require("./api/editor/resume")
+const projectRoutes = require("./api/editor/project/project")
+const componentRoutes = require("./api/editor/project/component")
 const skillRoutes = require("./api/editor/skill")
 const contactRoutes = require("./api/editor/contact")
 const experienceRoutes = require("./api/editor/experience")
@@ -30,12 +32,13 @@ const languageRoutes = require("./api/editor/language")
 const hobbyRoutes = require("./api/editor/hobby")
 
 app.use("/", authRoutes)
+app.use("/editor", projectRoutes)
+app.use("/editor", componentRoutes)
 app.use("/editor", resumeRoutes)
 app.use("/editor", skillRoutes)
 app.use("/editor", contactRoutes)
 app.use("/editor", experienceRoutes)
 app.use("/editor", formationRoutes)
-app.use("/editor", projectRoutes)
 app.use("/editor", languageRoutes)
 app.use("/editor", hobbyRoutes)
 
