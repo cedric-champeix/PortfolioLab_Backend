@@ -1,6 +1,6 @@
 const app = require("express")
-const {verifyAccessToken, Roles} = require("../../service/auth/jwt");
-const {getAllLanguages, getLanguage, updateLanguage, deleteLanguage, createLanguage} = require("../../service/editor/language");
+const {verifyAccessToken, Roles} = require("../../../service/auth/jwt");
+const {getAllLanguages, getLanguage, updateLanguage, deleteLanguage, createLanguage} = require("../../../service/editor/resume/language");
 
 let router = new app.Router()
 

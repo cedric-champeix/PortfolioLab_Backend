@@ -1,4 +1,4 @@
-const prisma = require("../client")
+const prisma = require("../../client")
 
 module.exports = {
     getAllFormations: async (req, res) => {

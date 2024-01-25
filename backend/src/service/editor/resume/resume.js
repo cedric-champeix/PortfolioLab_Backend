@@ -1,4 +1,4 @@
-const prisma = require("../client")
+const prisma = require("../../client")
 const {join} = require("path")
 const fs = require("node:fs/promises")
 

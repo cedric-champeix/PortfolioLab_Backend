@@ -1,6 +1,6 @@
 const app = require("express")
-const {verifyAccessToken, Roles} = require("../../service/auth/jwt");
-const {getAllHobbies, getHobby, updateHobby, deleteHobby, createHobby} = require("../../service/editor/hobby");
+const {verifyAccessToken, Roles} = require("../../../service/auth/jwt");
+const {getAllHobbies, getHobby, updateHobby, deleteHobby, createHobby} = require("../../../service/editor/resume/hobby");
 
 let router = new app.Router()
 

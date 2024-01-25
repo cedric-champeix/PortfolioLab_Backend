@@ -1,6 +1,6 @@
 const app = require("express")
-const {verifyAccessToken, Roles} = require("../../service/auth/jwt");
-const {getAllFormations, getFormations, createFormation, updateFormation, deleteFormation} = require("../../service/editor/formation");
+const {verifyAccessToken, Roles} = require("../../../service/auth/jwt");
+const {getAllFormations, getFormations, createFormation, updateFormation, deleteFormation} = require("../../../service/editor/resume/formation");
 
 let router = new app.Router()
 

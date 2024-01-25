@@ -1,9 +1,9 @@
 const app = require("express")
 const {
     getResume, updateResume, resetResume, uploadImage, deleteImage, connectSkill, disconnectSkill, connectSocial, disconnectSocial
-} = require("../../service/editor/resume");
-const {verifyAccessToken, Roles} = require("../../service/auth/jwt");
-const {uploadResumeImage} = require("../../service/file_upload/upload")
+} = require("../../../service/editor/resume/resume");
+const {verifyAccessToken, Roles} = require("../../../service/auth/jwt");
+const {uploadResumeImage} = require("../../../service/file_upload/upload")
 
 let router = new app.Router()
 

@@ -1,6 +1,6 @@
 const app = require("express")
-const {verifyAccessToken, Roles} = require("../../service/auth/jwt");
-const {getAllExperience, getExperience, createExperience, updateExperience, deleteExperience} = require("../../service/editor/experience");
+const {verifyAccessToken, Roles} = require("../../../service/auth/jwt");
+const {getAllExperience, getExperience, createExperience, updateExperience, deleteExperience} = require("../../../service/editor/resume/experience");
 
 let router = new app.Router()
 
