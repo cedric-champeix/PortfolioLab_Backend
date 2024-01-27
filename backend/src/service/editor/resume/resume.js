@@ -121,12 +121,12 @@ module.exports = {
                 }
             })
             
-            const [imagePath, resume] = await prisma.$transaction([getImagePath, updateResume])
+            const [oldResume, newResume] = await prisma.$transaction([getImagePath, updateResume])
 
-            if (imagePath)
-                await fs.rm(join(process.cwd(), imagePath))
+            if (oldResume.image)
+                await fs.rm(join(process.cwd(), oldResume.image))
 
-            return res.status(200).json(resume)
+            return res.status(200).json(newResume)
 
         } catch (e) {
             console.error(e)
