@@ -13,8 +13,6 @@ const imageFilter = (req, file, cb) => {
     }
 }
 
-const projectFile = "project.md"
-const projectMainImage = "mainImage"
 const fileSize1Mo = 1000000
 
 
@@ -30,34 +28,13 @@ module.exports = {
                 }
 
                 cb(null, resumeFolder)
+            },
+            filename: (req, file, cb) => {
+                cb(null, file.fieldname + "-" + Date.now())
             }
         }),
         fileFilter: imageFilter,
         limits: {fileSize: 5*fileSize1Mo}
-    }),
-
-    uploadProjectFile: multer({
-        storage: multer.diskStorage({
-            destination: async (req, file, cb) => {
-                const projectFolder = join(__dirname, "../../../public/editors", req.user.username, "projects", req.body.projectName)
-
-                if (!fs.existsSync(projectFolder)) {
-                    await fs.promises.mkdir(projectFolder, {recursive: true})
-                }
-
-                cb(null, projectFolder)
-            },
-            filename: (req, file, cb) => {
-                cb(null, projectFile)
-            }
-        }),
-        fileFilter: (req, file, cb) => {
-            if (!file.originalname.match(/\.(md)$/)) {
-                cb(null, false)
-            }
-            cb(null, true)
-        },
-        limits: {fileSize: fileSize1Mo * 10}
     }),
 
     uploadProjectMainImage: multer({
@@ -72,7 +49,7 @@ module.exports = {
                 cb(null, projectFolder)
             },
             filename: (req, file, cb) => {
-                cb(null, projectMainImage)
+                cb(null, file.fieldname + "-" + Date.now())
             }
         }),
         fileFilter: imageFilter,
@@ -89,6 +66,9 @@ module.exports = {
                 }
 
                 cb(null, projectFolder)
+            },
+            filename: (req, file, cb) => {
+                cb(null, file.fieldname + "-" + Date.now())
             }
         }),
         fileFilter: imageFilter,

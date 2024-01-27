@@ -95,17 +95,24 @@ module.exports = {
                 throw new Error("No file provided.")
             }
 
-            const publicIndex = file.path.indexOf("public/");
+            const publicFolderIndex = file.path.indexOf("public/");
 
-            if (publicIndex === -1) {
+            if (publicFolderIndex === -1) {
                 throw new Error("Path doesn't contain /public")
             }
 
-            const relativePath = file.path.substring(publicIndex);
+            const relativePath = file.path.substring(publicFolderIndex);
+            
+            const getImagePath = prisma.resume.findUnique({
+                where: {
+                    userId: user.id
+                },
+                select: {
+                    image: true
+                }
+            })
 
-            console.log(relativePath)
-
-            const resume = await prisma.resume.update({
+            const updateResume = prisma.resume.update({
                 where: {
                     userId: user.id
                 },
@@ -113,6 +120,11 @@ module.exports = {
                     image: relativePath
                 }
             })
+            
+            const [imagePath, resume] = await prisma.$transaction([getImagePath, updateResume])
+
+            if (imagePath)
+                await fs.rm(join(process.cwd(), imagePath))
 
             return res.status(200).json(resume)
 
