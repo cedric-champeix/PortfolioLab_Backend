@@ -1,4 +1,6 @@
 const prisma = require("../../client")
+const {join} = require("path")
+const fs = require("node:fs/promises")
 
 module.exports = {
 
@@ -57,14 +59,26 @@ module.exports = {
 
     createProject: async (req, res) => {
         try {
-            const data = req.body
-            const user = req.user
+            const {body, user, file} = req.body
+
+            let relativePath = ""
+            if (file) {
+                const publicFolderIndex = file.path.indexOf("public/");
+
+                if (publicFolderIndex === -1) {
+                    throw new Error("Path doesn't contain /public")
+                }
+
+                relativePath = file.path.substring(publicFolderIndex);
+            }
+
 
             const project = await prisma.project.create({
                 data: {
-                    name: data.name,
-                    description: data.description,
-                    contributors: data.contributors,
+                    name: body.name,
+                    description: body.description,
+                    contributors: body.contributors,
+                    mainImgURL: relativePath,
                     User: {
                         connect: {
                             id: user.id
@@ -82,33 +96,63 @@ module.exports = {
 
     updateProject: async (req, res) => {
         try {
-            const data = req.body
-            const user = req.user
+            const {body, user, file} = req.body
             const projectId = req.params.myProjectId
 
-            const keys = ["name", "description", "contributors", "skills"]
+            if (!file) {
+                const project = await prisma.project.update({
+                    where: {
+                        id: projectId,
+                        userId: user.id
+                    },
+                    data: {
+                        name: body.name,
+                        description: body.description,
+                        contributors: body.contributors
+                    }
+                })
 
-            for (const key in keys) {
-                if (!(key in data))
-                    data[key] = null
+                return res.status(200).json(project)
             }
 
-            await prisma.project.update({
+            const publicFolderIndex = file.path.indexOf("public/");
+
+            if (publicFolderIndex === -1) {
+                throw new Error("Path doesn't contain /public")
+            }
+
+            const relativePath = file.path.substring(publicFolderIndex);
+
+            const getOldProject = prisma.project.findUnique({
+                where: {
+                    id: projectId,
+                    userId: user.id
+                },
+                select: {
+                    mainImgURL: true
+                }
+            })
+
+            const updateProject = prisma.project.update({
                 where: {
                     id: projectId,
                     userId: user.id
                 },
                 data: {
-                    name: data.name,
-                    description: data.description,
-                    contributors: data.contributors,
-                    skills: {
-                        set: data.skills
-                    }
+                    name: body.name,
+                    description: body.description,
+                    contributors: body.contributors,
+                    mainImgURL: relativePath
                 }
             })
 
-            return res.status(200).json({message: "The project was updated successfully."})
+            const [oldProject, project] = prisma.$transaction([getOldProject, updateProject])
+
+            if (oldProject.mainImgURL)
+                await fs.rm(join(process.cwd(), oldProject.mainImgURL))
+
+            return res.status(200).json(project)
+
         } catch (e) {
             return res.status(500).json({message: "Couldn't update project."})
         }
@@ -119,12 +163,18 @@ module.exports = {
             const user = req.user
             const projectId = req.params.myProjectId
 
-            await prisma.project.delete({
+            const oldProject = await prisma.project.delete({
                 where: {
                     id: projectId,
                     userId: user.id
+                },
+                select: {
+                    mainImgURL: true
                 }
             })
+
+            if (oldProject.mainImgURL)
+                await fs.rm(join(process.cwd(), oldProject.mainImgURL))
 
             return res.sendStatus(200)
         } catch (e) {
