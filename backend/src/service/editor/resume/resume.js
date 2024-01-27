@@ -1,6 +1,6 @@
 const prisma = require("../../client")
 const {join} = require("path")
-const fs = require("node:fs/promises")
+const fs = require("node:fs")
 
 module.exports = {
     getResume: async (req, res) => {
@@ -79,6 +79,17 @@ module.exports = {
             })
 
             await prisma.$transaction([deleteResume, createResume])
+
+            const resumeFolder = join(process.cwd(), "/public/editors", req.user.username, "resume")
+            fs.rmdir(resumeFolder, (err) => {
+                if (err) {
+                    console.log("Couldn't delete ", req.user.username," resume folder: ", err)
+                }else {
+                    console.log("Deleted ", req.user.username," resume folder.")
+                }
+            });
+
+            console.log("Reset of ", req.user.username,"'s resume.")
 
             return res.status(200).json({message: "The resume was successfully reset."})
         } catch (e) {
