@@ -24,19 +24,35 @@ model User {
   Experience Experience[]
   Language   Language[]
   Hobby      Hobby[]
+  Image      Image[]
+}
+
+model Image {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  path          String
+  ProjectMain   Project? @relation("MainImage", fields: [projectMainId], references: [id], onDelete: SetNull)
+  projectMainId String?  @unique @db.ObjectId
+  ProjectData   Project? @relation("ProjectImages", fields: [projectDataId], references: [id], onDelete: SetNull)
+  projectDataId String?  @db.ObjectId
+  User          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String   @db.ObjectId
+  Resume        Resume?  @relation(fields: [resumeId], references: [id])
+  resumeId      String?  @unique @db.ObjectId
 }
 
 model Project {
-  id           String      @id @default(auto()) @map("_id") @db.ObjectId
-  name         String
-  description  String?
-  mainImgURL   String?
-  components   Component[]
-  contributors String[]
-  skills       Skill[]     @relation(fields: [skillIds], references: [id])
-  skillIds     String[]    @db.ObjectId
-  User         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId       String      @db.ObjectId
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  description   String?
+  MainImage     Image?      @relation("MainImage")
+  ProjectImages Image[]     @relation("ProjectImages")
+  components    Component[]
+  contributors  String[]
+  skills        Skill[]     @relation(fields: [skillIds], references: [id])
+  skillIds      String[]    @db.ObjectId
+  User          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String      @db.ObjectId
 }
 
 model Component {
@@ -51,7 +67,7 @@ model Component {
 model Resume {
   id          String       @id @default(auto()) @map("_id") @db.ObjectId
   description String?
-  image       String?
+  Image       Image?
   skills      Skill[]
   contacts    Contact[]
   experiences Experience[]

@@ -1,6 +1,7 @@
 const multer = require("multer")
-const {join} = require("path");
-const fs = require("node:fs");
+const {join, extname} = require("path")
+const fs = require("node:fs")
+const uuid = require("uuid")
 
 const imageFilter = (req, file, cb) => {
     if (file.mimetype === "image/jpg" ||
@@ -13,7 +14,17 @@ const imageFilter = (req, file, cb) => {
     }
 }
 
-const fileSize1Mo = 1000000
+const editorDestination = async (username) => {
+    const projectFolder = join(process.cwd(), "/public/editors", username)
+
+    if (!fs.existsSync(projectFolder)) {
+        await fs.promises.mkdir(projectFolder, {recursive: true})
+    }
+
+    return projectFolder
+}
+
+const fileSize1Mo = 1048576
 
 
 module.exports = {
@@ -21,16 +32,11 @@ module.exports = {
     uploadResumeImage: multer({
         storage: multer.diskStorage({
             destination: async (req, file, cb) => {
-                const resumeFolder = join(__dirname, "../../../public/editors", req.user.username, "resume")
-
-                if (!fs.existsSync(resumeFolder)) {
-                    await fs.promises.mkdir(resumeFolder, {recursive: true})
-                }
-
-                cb(null, resumeFolder)
+                const dest = await editorDestination(req.user.username)
+                cb(null, dest)
             },
             filename: (req, file, cb) => {
-                cb(null, file.fieldname + "-" + Date.now())
+                cb(null, uuid.v4() + extname(file.originalname))
             }
         }),
         fileFilter: imageFilter,
@@ -40,35 +46,25 @@ module.exports = {
     uploadProjectMainImage: multer({
         storage: multer.diskStorage({
             destination: async (req, file, cb) => {
-                const projectFolder = join(__dirname, "../../../public/editors", req.user.username, "projects", req.body.projectName)
-
-                if (!fs.existsSync(projectFolder)) {
-                    await fs.promises.mkdir(projectFolder, {recursive: true})
-                }
-
-                cb(null, projectFolder)
+                const dest = await editorDestination(req.user.username)
+                cb(null, dest)
             },
             filename: (req, file, cb) => {
-                cb(null, file.fieldname + "-" + Date.now())
+                cb(null, uuid.v4() + extname(file.originalname))
             }
         }),
         fileFilter: imageFilter,
-        limits: {fileSize: fileSize1Mo},
+        limits: {fileSize: fileSize1Mo * 2},
     }),
 
     uploadProjectImage: multer({
         storage: multer.diskStorage({
             destination: async (req, file, cb) => {
-                const projectFolder = join(__dirname, "../../../public/editors", req.user.username, "projects", req.body.projectName, "images")
-
-                if (!fs.existsSync(projectFolder)) {
-                    await fs.promises.mkdir(projectFolder, {recursive: true})
-                }
-
-                cb(null, projectFolder)
+                const dest = await editorDestination(req.user.username)
+                cb(null, dest)
             },
             filename: (req, file, cb) => {
-                cb(null, file.fieldname + "-" + Date.now())
+                cb(null, uuid.v4() + extname(file.originalname))
             }
         }),
         fileFilter: imageFilter,

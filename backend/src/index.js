@@ -20,6 +20,7 @@ app.use(cors({
 }))
 
 const authRoutes = require("./api/auth")
+const imageRoutes = require("./api/editor/image")
 const projectRoutes = require("./api/editor/project/project")
 const componentRoutes = require("./api/editor/project/component")
 const resumeRoutes = require("./api/editor/resume/resume")
@@ -31,6 +32,7 @@ const languageRoutes = require("./api/editor/resume/language")
 const hobbyRoutes = require("./api/editor/resume/hobby")
 
 app.use("/", authRoutes)
+app.use("/editor", imageRoutes)
 app.use("/editor", projectRoutes)
 app.use("/editor", componentRoutes)
 app.use("/editor", resumeRoutes)
