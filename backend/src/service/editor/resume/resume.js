@@ -1,6 +1,4 @@
 const prisma = require("../../client")
-const {join} = require("path")
-const fs = require("node:fs")
 
 module.exports = {
     getResume: async (req, res) => {
@@ -15,6 +13,7 @@ module.exports = {
                     resume:
                         {
                             include: {
+                                Image: true,
                                 skills: true,
                                 contacts: true,
                                 experiences: true,
@@ -80,101 +79,58 @@ module.exports = {
 
             await prisma.$transaction([deleteResume, createResume])
 
-            const resumeFolder = join(process.cwd(), "/public/editors", req.user.username, "resume")
-            fs.rmdir(resumeFolder, (err) => {
-                if (err) {
-                    console.log("Couldn't delete ", req.user.username," resume folder: ", err)
-                }else {
-                    console.log("Deleted ", req.user.username," resume folder.")
-                }
-            });
-
             console.log("Reset of ", req.user.username,"'s resume.")
 
             return res.status(200).json({message: "The resume was successfully reset."})
         } catch (e) {
+            console.error(e)
             return res.status(500).json({message: "Couldn't reset resume."})
         }
     },
 
-    uploadImage: async (req, res) => {
+    connectImage: async (req, res) => {
         try {
-            const user = req.user
-            const file = req.file
+            const {imageId} = req.params
 
-            if(!file) {
-                throw new Error("No file provided.")
-            }
-
-            const publicFolderIndex = file.path.indexOf("public/");
-
-            if (publicFolderIndex === -1) {
-                throw new Error("Path doesn't contain /public")
-            }
-
-            const relativePath = file.path.substring(publicFolderIndex);
-            
-            const getImagePath = prisma.resume.findUnique({
+            await prisma.resume.update({
                 where: {
-                    userId: user.id
-                },
-                select: {
-                    image: true
-                }
-            })
-
-            const updateResume = prisma.resume.update({
-                where: {
-                    userId: user.id
+                    userId: req.user.id
                 },
                 data: {
-                    image: relativePath
+                    Image: {
+                        connect: {id: imageId}
+                    }
                 }
             })
-            
-            const [oldResume, newResume] = await prisma.$transaction([getImagePath, updateResume])
 
-            if (oldResume.image)
-                await fs.rm(join(process.cwd(), oldResume.image))
-
-            return res.status(200).json(newResume)
+            return res.sendStatus(200)
 
         } catch (e) {
             console.error(e)
-            return res.status(500).json({message: "Couldn't upload image"})
+            return res.status(500).json({message: "Couldn't connect image."})
         }
     },
 
-    deleteImage: async (req, res) => {
+    disconnectImage: async (req, res) => {
         try {
-            const user = req.user
+            const {imageId} = req.params
 
-            const resume = await prisma.resume.findUnique({
+            await prisma.resume.update({
                 where: {
-                    userId: user.id
-                }
-            })
-
-            if (!resume.image) {
-                return res.status(400).json({error: "The resume doesn't have any image."})
-            }
-
-            await fs.rm(join(process.cwd(), resume.image))
-
-            const updatedResume = await prisma.resume.update({
-                where: {
-                    userId: user.id
+                    userId: req.user.id,
                 },
                 data: {
-                    image: null
+                    Image: {
+                        disconnect: {id: imageId}
+                    }
                 }
             })
 
-            return res.status(200).json(updatedResume)
+            return res.sendStatus(200)
 
         } catch (e) {
             console.error(e)
-            return res.status(500).json({error: "Couldn't delete image"})
+            return res.status(500).json({message: "Couldn't disconnect image."})
         }
     },
 
@@ -197,6 +153,7 @@ module.exports = {
             return res.sendStatus(200)
 
         } catch (e) {
+            console.error(e)
             return res.status(500).json({message: "Couldn't connect skill."})
         }
     },
@@ -220,6 +177,7 @@ module.exports = {
             return res.sendStatus(200)
 
         } catch (e) {
+            console.error(e)
             return res.status(500).json({message: "Couldn't disconnect skill."})
         }
     },
@@ -243,6 +201,7 @@ module.exports = {
             return res.sendStatus(200)
 
         } catch (e) {
+            console.error(e)
             return res.status(500).json({message: "Couldn't connect contact."})
         }
     },
@@ -266,6 +225,7 @@ module.exports = {
             return res.sendStatus(200)
 
         } catch (e) {
+            console.error(e)
             return res.status(500).json({message: "Couldn't disconnect contact."})
         }
     }

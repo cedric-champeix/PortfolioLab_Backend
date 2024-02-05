@@ -1,9 +1,8 @@
 const app = require("express")
 const {
-    getResume, updateResume, resetResume, uploadImage, deleteImage, connectSkill, disconnectSkill, connectSocial, disconnectSocial
-} = require("../../../service/editor/resume/resume");
-const {verifyAccessToken, Roles} = require("../../../service/auth/jwt");
-const {uploadResumeImage} = require("../../../service/file_upload/upload")
+    getResume, updateResume, resetResume, connectImage, disconnectImage, connectSkill, disconnectSkill, connectSocial, disconnectSocial
+} = require("../../../service/editor/resume/resume")
+const {verifyAccessToken, Roles} = require("../../../service/auth/jwt")
 
 let router = new app.Router()
 
@@ -12,9 +11,9 @@ router.route('/resume')
     .put(verifyAccessToken([Roles.Editor]), updateResume)
     .delete(verifyAccessToken([Roles.Editor]), resetResume)
 
-router.route('/resume/image')
-    .post(verifyAccessToken([Roles.Editor]), uploadResumeImage.single("profilePicture"), uploadImage)
-    .delete(verifyAccessToken([Roles.Editor]), deleteImage)
+router.route('/resume/image/:imageId')
+    .put(verifyAccessToken([Roles.Editor]), connectImage)
+    .delete(verifyAccessToken([Roles.Editor]), disconnectImage)
 
 router.route('/resume/skills/:skillId')
     .put(verifyAccessToken([Roles.Editor]), connectSkill)
