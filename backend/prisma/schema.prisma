@@ -54,6 +54,7 @@ model Project {
   skillIds         String[]    @db.ObjectId
   User             User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId           String      @db.ObjectId
+  published        Boolean     @default(false)
 }
 
 model Component {
@@ -77,6 +78,7 @@ model Resume {
   hobbies     Hobby[]
   User        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String       @unique @db.ObjectId
+  published   Boolean      @default(false)
 }
 
 model Skill {
@@ -168,3 +170,4 @@ type Address {
   zip     String
   country String
 }
+

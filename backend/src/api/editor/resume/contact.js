@@ -1,6 +1,6 @@
 const app = require("express")
-const {verifyAccessToken, Roles} = require("../../service/auth/jwt");
-const {getAllContacts, getContact, updateContact, deleteContact, createContact} = require("../../service/editor/contact");
+const {verifyAccessToken, Roles} = require("../../../service/auth/jwt");
+const {getAllContacts, getContact, updateContact, deleteContact, createContact} = require("../../../service/editor/contact");
 
 let router = new app.Router()
 
