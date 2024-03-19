@@ -62,8 +62,6 @@ module.exports = {
             const {user, file} = req
             const body = JSON.parse(req.body.data)
 
-            console.log(body)
-
             if (!file) {
                 const project = await prisma.project.create({
                     data: {

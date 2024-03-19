@@ -43,7 +43,7 @@ module.exports = {
                     Resume: body.resumeId ? {
                         connect: {id: body.resumeId}
                     } : undefined,
-                    ProjectData: body.projectId ? {
+                    Project: body.projectId ? {
                         connect: {id: body.projectId}
                     } : undefined,
                     User: {
