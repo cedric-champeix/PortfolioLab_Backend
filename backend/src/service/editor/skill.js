@@ -38,10 +38,6 @@ module.exports = {
         try {
             const data = req.body
 
-            if (!("description" in data)){
-                data.description = null;
-            }
-
             if (!("resumeId" in data)){
                 data.Resume = {};
             }else {
@@ -55,8 +51,6 @@ module.exports = {
             const skill = await prisma.skill.create({
                 data: {
                     name: data.name,
-                    description: data.description,
-                    mastery: data.mastery,
                     isSoft: data.isSoft,
                     Resume: data.Resume,
                     Projects: {
@@ -85,7 +79,7 @@ module.exports = {
             const skillId = req.params.skillId
 
             let valuesToModify = {}
-            const acceptable_keys = ["name", "description", "mastery", "isSoft"]
+            const acceptable_keys = ["name", "isSoft"]
 
             for (const key of acceptable_keys) {
                 if (key in data)

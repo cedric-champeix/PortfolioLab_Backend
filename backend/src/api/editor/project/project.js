@@ -9,7 +9,7 @@ const {
     updateProject,
     deleteProject,
     connectProjectImage,
-    disconnectProjectImage
+    disconnectProjectImage, publish, unpublish
 } = require("../../../service/editor/project/project");
 const {uploadProjectMainImage} = require("../../../service/file_upload/upload")
 
@@ -32,5 +32,10 @@ router.route('/projects/:myProjectId/images/:imageId')
     .put(verifyAccessToken([Roles.Editor]), connectProjectImage)
     .delete(verifyAccessToken([Roles.Editor]), disconnectProjectImage)
 
+router.route('/projects/publish/:myProjectId')
+    .put(verifyAccessToken([Roles.Editor]), publish)
+
+router.route('/projects/unpublish/:myProjectId')
+    .put(verifyAccessToken([Roles.Editor]), unpublish)
 
 module.exports = router

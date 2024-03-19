@@ -1,6 +1,8 @@
 const app = require("express")
 const {
-    getResume, updateResume, resetResume, connectImage, disconnectImage, connectSkill, disconnectSkill, connectSocial, disconnectSocial
+    getResume, updateResume, resetResume, connectImage, disconnectImage, connectSkill, disconnectSkill, connectSocial, disconnectSocial,
+    publish,
+    unpublish
 } = require("../../../service/editor/resume/resume")
 const {verifyAccessToken, Roles} = require("../../../service/auth/jwt")
 
@@ -22,5 +24,11 @@ router.route('/resume/skills/:skillId')
 router.route('/resume/socials/:contactId')
     .put(verifyAccessToken([Roles.Editor]), connectSocial)
     .delete(verifyAccessToken([Roles.Editor]), disconnectSocial)
+
+router.route('/resume/publish')
+    .put(verifyAccessToken([Roles.Editor]), publish)
+
+router.route('/resume/unpublish')
+    .put(verifyAccessToken([Roles.Editor]), unpublish)
 
 module.exports = router

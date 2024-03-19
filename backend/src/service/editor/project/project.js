@@ -319,5 +319,45 @@ module.exports = {
             console.error(e)
             return res.status(500).json({message: "Couldn't disconnect image."})
         }
+    },
+    publish: async (req, res) => {
+        try {
+            const {myProjectId} = req.params
+            const {user} = req
+
+            const publish = await prisma.project.update({
+                where : {
+                    userId: user.id,
+                    id: myProjectId
+                }, data :{
+                    published: true
+                }
+            })
+            return res.status(200).json(publish)
+
+        } catch (e) {
+            console.error(e)
+            return res.status(500).json({message: "Couldn't update project."})
+        }
+    },
+    unpublish : async (req, res) => {
+        try {
+            const {myProjectId} = req.params
+            const {user} = req
+
+            const publish = await prisma.project.update({
+                where : {
+                    userId: user.id,
+                    id: myProjectId
+                }, data :{
+                    published: false
+                }
+            })
+            return res.status(200).json(publish)
+
+        } catch (e) {
+            console.error(e)
+            return res.status(500).json({message: "Couldn't update project."})
+        }
     }
 }

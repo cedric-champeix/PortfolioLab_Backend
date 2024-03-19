@@ -1,4 +1,5 @@
 const prisma = require('./client')
+const exclude = require("./../utils/exclude")
 /**
  * The goal of this request is to provide the information of a user in readonly, if and only if the user authorized and published its resume
  *
@@ -13,7 +14,8 @@ module.exports = {
             //However, the id is already a field of the resume, so using the username would be suboptimal
             const resume = await prisma.resume.findMany({
                 where: {
-                    userId: id
+                    userId: id,
+                    published: true
                 },
                 //Include all the fields
                 include: {
@@ -24,9 +26,13 @@ module.exports = {
                     hobbies: true
                 }
             })
+
+            //In this part we do not want certain fields like the id and the visibility
+            const filteredResume = exclude.exclude(resume, ["published"])['0']
+
             console.log("Resume fetched")
-            console.log(resume)
-            return res.status(200).json(resume)
+            console.log(filteredResume)
+            return res.status(200).json(filteredResume)
 
         } catch (e) {
             console.error(e)
@@ -41,7 +47,8 @@ module.exports = {
 
             const projects = await prisma.project.findMany({
                 where: {
-                    userId: id
+                    userId: id,
+                    published: true
                 }
             })
 

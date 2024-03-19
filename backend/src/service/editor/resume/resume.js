@@ -1,4 +1,5 @@
 const prisma = require("../../client")
+const {exclude} = require("../../../utils/exclude");
 
 module.exports = {
     getResume: async (req, res) => {
@@ -14,18 +15,17 @@ module.exports = {
                         {
                             include: {
                                 Image: true,
-                                skills: true,
-                                contacts: true,
-                                experiences: true,
-                                formations: true,
-                                languages: true,
-                                hobbies: true
+                                User: true
                             }
                         }
                 }
             })
 
-            console.log("Get resume: ", resume.resume)
+            resume.resume.User = exclude(resume.resume.User, ['pwd', 'id', 'role'])
+
+            console.log(resume.resume)
+
+            //console.log("Get resume: ", resume)
             return res.status(200).json(resume.resume)
 
         } catch (e) {
@@ -228,5 +228,45 @@ module.exports = {
             console.error(e)
             return res.status(500).json({message: "Couldn't disconnect contact."})
         }
+    },
+    publish: async (req, res) => {
+        try {
+            const id = req.user.id
+            await prisma.resume.update({
+                where:{
+                    userId: id
+                },
+                data: {
+                    published: true
+                }
+            })
+
+            return res.sendStatus(200)
+
+
+        } catch (e) {
+            console.error(e)
+            return res.status(500).json({message: "Couldn't publish the resume."})
+        }
+    },
+    unpublish: async (req, res) => {
+        try {
+            const id = req.user.id
+            await prisma.resume.update({
+                where:{
+                    userId: id
+                },
+                data: {
+                    published: false
+                }
+            })
+
+            return res.sendStatus(200)
+
+        } catch (e) {
+            console.error(e)
+            return res.status(500).json({message: "Couldn't unpublish the resume."})
+        }
     }
 }
+
