@@ -28,36 +28,7 @@ const fileSize1Mo = 1048576
 
 
 module.exports = {
-
-    uploadResumeImage: multer({
-        storage: multer.diskStorage({
-            destination: async (req, file, cb) => {
-                const dest = await editorDestination(req.user.username)
-                cb(null, dest)
-            },
-            filename: (req, file, cb) => {
-                cb(null, uuid.v4() + extname(file.originalname))
-            }
-        }),
-        fileFilter: imageFilter,
-        limits: {fileSize: 5*fileSize1Mo}
-    }),
-
-    uploadProjectMainImage: multer({
-        storage: multer.diskStorage({
-            destination: async (req, file, cb) => {
-                const dest = await editorDestination(req.user.username)
-                cb(null, dest)
-            },
-            filename: (req, file, cb) => {
-                cb(null, uuid.v4() + extname(file.originalname))
-            }
-        }),
-        fileFilter: imageFilter,
-        limits: {fileSize: fileSize1Mo * 2},
-    }),
-
-    uploadProjectImage: multer({
+    uploadImage: multer({
         storage: multer.diskStorage({
             destination: async (req, file, cb) => {
                 const dest = await editorDestination(req.user.username)

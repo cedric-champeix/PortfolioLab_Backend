@@ -15,6 +15,8 @@ router.route('/resume')
 
 router.route('/resume/image/:imageId')
     .put(verifyAccessToken([Roles.Editor]), connectImage)
+
+router.route('/resume/image')
     .delete(verifyAccessToken([Roles.Editor]), disconnectImage)
 
 router.route('/resume/skills/:skillId')

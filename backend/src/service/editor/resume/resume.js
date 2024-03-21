@@ -92,6 +92,8 @@ module.exports = {
         try {
             const {imageId} = req.params
 
+            console.log(imageId)
+
             await prisma.resume.update({
                 where: {
                     userId: req.user.id
@@ -113,15 +115,13 @@ module.exports = {
 
     disconnectImage: async (req, res) => {
         try {
-            const {imageId} = req.params
-
             await prisma.resume.update({
                 where: {
                     userId: req.user.id,
                 },
                 data: {
                     Image: {
-                        disconnect: {id: imageId}
+                        disconnect: true
                     }
                 }
             })

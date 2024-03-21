@@ -45,6 +45,7 @@ module.exports = {
                         }
                     },
                     skills: true,
+                    MainImage: true,
                     ProjectImages: true
                 }
             })
@@ -59,73 +60,21 @@ module.exports = {
 
     createProject: async (req, res) => {
         try {
-            const {user, file} = req
-            const body = JSON.parse(req.body.data)
-
-            if (!file) {
-                const project = await prisma.project.create({
-                    data: {
-                        name: body.name,
-                        description: body.description,
-                        contributors: body.contributors,
-                        User: {
-                            connect: {
-                                id: user.id
-                            }
-                        },
-                        MainImage: body.imageId ? {
-                            connect: {
-                                id: body.imageId
-                            }
-                        } : undefined
-                    },
-                    include: {
-                        skills: true,
-                        MainImage: true
-                    }
-                })
-
-                return res.status(200).json(project)
-            }
-
-            const publicFolderIndex = file.path.search(/public[/+\\]/g)
-            if (publicFolderIndex === -1) {
-                throw new Error("Path doesn't contain /public")
-            }
-
-            const relativePath = file.path.substring(publicFolderIndex)
-
+            const {user} = req
+            const body = req.body
 
             const project = await prisma.project.create({
                 data: {
                     name: body.name,
-                    description: body.description,
-                    contributors: body.contributors,
-                    MainImage: {
-                        create: {
-                            name: body.image.name,
-                            path: relativePath,
-                            User: {
-                                connect: {
-                                    id: user.id
-                                }
-                            }
-                        }
-                    },
                     User: {
                         connect: {
                             id: user.id
                         }
                     }
-                },
-                include: {
-                    skills: true,
-                    MainImage: true
                 }
             })
 
             return res.status(200).json(project)
-
         } catch (e) {
             console.error(e)
             return res.status(500).json({message: "Couldn't create project."})
@@ -134,42 +83,9 @@ module.exports = {
 
     updateProject: async (req, res) => {
         try {
-            const {user, file} = req
+            const {user} = req
             const {myProjectId} = req.params
-            const body = JSON.parse(req.body.data)
-
-            if (!file) {
-                const project = await prisma.project.update({
-                    where: {
-                        id: myProjectId,
-                        userId: user.id
-                    },
-                    data: {
-                        name: body.name,
-                        description: body.description,
-                        contributors: body.contributors,
-                        MainImage: body.imageId ? {
-                            connect: {id: body.imageId}
-                        } : {
-                            disconnect: true
-                        }
-                    },
-                    include: {
-                        skills: true,
-                        MainImage: true
-                    }
-                })
-
-                return res.status(200).json(project)
-            }
-
-            const publicFolderIndex = file.path.search(/public[/+\\]/g)
-
-            if (publicFolderIndex === -1) {
-                throw new Error("Path doesn't contain /public")
-            }
-
-            const relativePath = file.path.substring(publicFolderIndex)
+            const body = req.body
 
             const project = await prisma.project.update({
                 where: {
@@ -179,22 +95,17 @@ module.exports = {
                 data: {
                     name: body.name,
                     description: body.description,
-                    contributors: body.contributors,
-                    MainImage: {
-                        create: {
-                            name: body.image.name,
-                            path: relativePath,
-                            User: {
-                                connect: {
-                                    id: user.id
-                                }
-                            }
-                        }
-                    }
+                    contributors: body.contributors
                 },
                 include: {
                     skills: true,
-                    MainImage: true
+                    MainImage: true,
+                    ProjectImages: true,
+                    components: {
+                        orderBy: {
+                            index: "asc"
+                        }
+                    },
                 }
             })
 
@@ -273,6 +184,52 @@ module.exports = {
         }
     },
 
+    connectMainImage: async (req, res) => {
+        try {
+            const {myProjectId, imageId} = req.params
+
+            await prisma.project.update({
+                where: {
+                    id: myProjectId,
+                    userId: req.user.id
+                },
+                data: {
+                    MainImage: {
+                        connect: {id: imageId}
+                    }
+                }
+            })
+
+            return res.sendStatus(200)
+        } catch (e) {
+            console.error(e)
+            return res.status(500).json({message: "Couldn't connect main image."})
+        }
+    },
+
+    disconnectMainImage: async (req, res) => {
+        try {
+            const {myProjectId} = req.params
+
+            await prisma.project.update({
+                where: {
+                    id: myProjectId,
+                    userId: req.user.id
+                },
+                data: {
+                    MainImage: {
+                        disconnect: true
+                    }
+                }
+            })
+
+            return res.sendStatus(200)
+        } catch (e) {
+            console.error(e)
+            return res.status(500).json({message: "Couldn't disconnect main image."})
+        }
+    },
+
     connectProjectImage: async (req, res) => {
         try {
             const {myProjectId, imageId} = req.params
@@ -320,16 +277,17 @@ module.exports = {
             return res.status(500).json({message: "Couldn't disconnect image."})
         }
     },
+
     publish: async (req, res) => {
         try {
             const {myProjectId} = req.params
             const {user} = req
 
             const publish = await prisma.project.update({
-                where : {
+                where: {
                     userId: user.id,
                     id: myProjectId
-                }, data :{
+                }, data: {
                     published: true
                 }
             })
@@ -340,16 +298,17 @@ module.exports = {
             return res.status(500).json({message: "Couldn't update project."})
         }
     },
-    unpublish : async (req, res) => {
+
+    unpublish: async (req, res) => {
         try {
             const {myProjectId} = req.params
             const {user} = req
 
             const publish = await prisma.project.update({
-                where : {
+                where: {
                     userId: user.id,
                     id: myProjectId
-                }, data :{
+                }, data: {
                     published: false
                 }
             })

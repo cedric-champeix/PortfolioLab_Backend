@@ -36,8 +36,7 @@ model Image {
   projectIds  String[]  @db.ObjectId
   User        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String    @db.ObjectId
-  Resume      Resume?   @relation(fields: [resumeId], references: [id])
-  resumeId    String?   @unique @db.ObjectId
+  Resume      Resume[]  @relation("ResumeImage")
 }
 
 model Project {
@@ -69,7 +68,8 @@ model Component {
 model Resume {
   id          String       @id @default(auto()) @map("_id") @db.ObjectId
   description String?
-  Image       Image?
+  Image       Image?       @relation("ResumeImage", fields: [ImageId], references: [id])
+  ImageId     String?      @db.ObjectId
   skills      Skill[]
   contacts    Contact[]
   experiences Experience[]
