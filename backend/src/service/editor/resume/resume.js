@@ -45,6 +45,9 @@ module.exports = {
                 },
                 data: {
                     description: data.description
+                },
+                include: {
+                    Image: true
                 }
             })
 
