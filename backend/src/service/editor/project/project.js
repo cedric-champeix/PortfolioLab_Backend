@@ -87,16 +87,20 @@ module.exports = {
             const {myProjectId} = req.params
             const body = req.body
 
+            let valuesToModify = {}
+            const acceptable_keys = ["name", "description", "contributors"]
+
+            for (const key of acceptable_keys) {
+                if (key in body)
+                    valuesToModify[key] = body[key]
+            }
+
             const project = await prisma.project.update({
                 where: {
                     id: myProjectId,
                     userId: user.id
                 },
-                data: {
-                    name: body.name,
-                    description: body.description,
-                    contributors: body.contributors
-                },
+                data: acceptable_keys,
                 include: {
                     skills: true,
                     MainImage: true,
