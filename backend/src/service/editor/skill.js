@@ -3,17 +3,18 @@ const prisma = require("../client")
 module.exports = {
     getAllSkills: async (req, res) => {
         try {
-            const {user, body} = req
+            const user = req.user
+            const data = req.query
 
             const filter = {
                 userId: user.id
             }
 
-            if (body.resumeId) {
-                filter.resumeId = body.resumeId
-            } else if (body.projectId) {
+            if (data.resumeId) {
+                filter.resumeId = data.resumeId
+            } else if (data.projectId) {
                 filter.projectsIds = {
-                    has: body.projectId,
+                    has: data.projectId,
                 }
             }
 
