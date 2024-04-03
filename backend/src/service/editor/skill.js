@@ -3,12 +3,22 @@ const prisma = require("../client")
 module.exports = {
     getAllSkills: async (req, res) => {
         try {
-            const user = req.user
+            const {user, body} = req
+
+            const filter = {
+                userId: user.id
+            }
+
+            if (body.resumeId) {
+                filter.resumeId = body.resumeId
+            } else if (body.projectId) {
+                filter.projectsIds = {
+                    has: body.projectId,
+                }
+            }
 
             const skills = await prisma.skill.findMany({
-                where: {
-                    userId: user.id
-                }
+                where: filter
             })
 
             return res.status(200).json(skills)
