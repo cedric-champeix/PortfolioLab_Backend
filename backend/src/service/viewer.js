@@ -23,7 +23,9 @@ module.exports = {
                     experiences: true,
                     formations: true,
                     languages: true,
-                    hobbies: true
+                    hobbies: true,
+                    contacts: true,
+                    Image: true
                 }
             })
 

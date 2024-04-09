@@ -87,6 +87,30 @@ module.exports = {
             res.status(500).json({message: "Internal Server Error"})
         }
 
+    },
+    getUser: async (req, res) => {
+        const data = req.body
+
+        try {
+            const user = await prisma.user.findUnique({
+                where: {
+                    id: data.id
+                }
+            })
+
+            delete user.pwd
+
+            return res.status(200).json({
+                status: true,
+                result: {
+                    user: user
+                },
+            })
+        } catch (e) {
+            console.error(e)
+            res.status(500).json({message: "Internal Server Error"})
+        }
+
     }
 }
 
