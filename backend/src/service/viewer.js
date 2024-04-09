@@ -8,14 +8,14 @@ const exclude = require("./../utils/exclude")
 module.exports = {
     getResume: async (req, res) => {
         try {
-            const id = req.params.userId
+            const id = req.userId
 
-            console.log("USERID", id)
             //We had a concern on whether we should use the username or the id to retrieve the data.
             //However, the id is already a field of the resume, so using the username would be suboptimal
-            const resume = await prisma.resume.findUnique({
+            const resume = await prisma.resume.findMany({
                 where: {
-                    userId: id
+                    userId: id,
+                    published: true
                 },
                 //Include all the fields
                 include: {
@@ -23,18 +23,16 @@ module.exports = {
                     experiences: true,
                     formations: true,
                     languages: true,
-                    hobbies: true,
-                    contacts: true,
-                    Image: true
+                    hobbies: true
                 }
             })
 
             //In this part we do not want certain fields like the id and the visibility
-            // const filteredResume = exclude.exclude(resume, ["published"])['0']
+            const filteredResume = exclude.exclude(resume, ["published"])['0']
 
             console.log("Resume fetched")
-            console.log(resume)
-            return res.status(200).json(resume)
+            console.log(filteredResume)
+            return res.status(200).json(filteredResume)
 
         } catch (e) {
             console.error(e)
