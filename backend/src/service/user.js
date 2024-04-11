@@ -111,6 +111,32 @@ module.exports = {
             res.status(500).json({message: "Internal Server Error"})
         }
 
+    },
+    deleteUser: async (req, res) => {
+        const data = req.body
+
+        try {
+
+            //delete user
+            const user = await prisma.user.delete({
+                where: {
+                    id: data.id
+                }
+            })
+
+            return res.status(200).json({
+                status: true,
+                result: {
+                    user: user
+                },
+            })
+        } catch (e) {
+            console.error(e)
+            res.status(500).json({message: "Internal Server Error"})
+        }
+
+        //Clearing cookie
+        res.clearCookie("jwt_token")
     }
 }
 

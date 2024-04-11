@@ -44,7 +44,8 @@ module.exports = {
                     userId: user.id
                 },
                 data: {
-                    description: data.description
+                    description: data.description,
+                    title: data.title
                 },
                 include: {
                     Image: true

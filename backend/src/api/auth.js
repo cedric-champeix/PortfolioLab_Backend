@@ -9,4 +9,6 @@ router.post("/login", user.login)
 
 router.get("/getUser", user.getUser)
 
+router.delete('/deleteUser', user.deleteUser)
+
 module.exports = router

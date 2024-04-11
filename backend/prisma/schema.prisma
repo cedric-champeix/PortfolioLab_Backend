@@ -68,6 +68,7 @@ model Component {
 model Resume {
   id          String       @id @default(auto()) @map("_id") @db.ObjectId
   description String?
+  title       String?
   Image       Image?       @relation("ResumeImage", fields: [ImageId], references: [id])
   ImageId     String?      @db.ObjectId
   skills      Skill[]
