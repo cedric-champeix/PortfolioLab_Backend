@@ -19,7 +19,14 @@ app.use(cors({
     credentials: true
 }))
 
+////////////// AUTHENTICATION ROUTES //////////////
+
 const authRoutes = require("./api/auth")
+
+app.use("/", authRoutes)
+
+////////////// EDITOR ROUTES //////////////
+
 const imageRoutes = require("./api/editor/image")
 const projectRoutes = require("./api/editor/project/project")
 const componentRoutes = require("./api/editor/project/component")
@@ -30,9 +37,7 @@ const experienceRoutes = require("./api/editor/resume/experience")
 const formationRoutes = require("./api/editor/resume/formation")
 const languageRoutes = require("./api/editor/resume/language")
 const hobbyRoutes = require("./api/editor/resume/hobby")
-const viewerRoutes = require("./api/viewer/viewer")
 
-app.use("/", authRoutes)
 app.use("/editor", imageRoutes)
 app.use("/editor", projectRoutes)
 app.use("/editor", componentRoutes)
@@ -43,7 +48,13 @@ app.use("/editor", experienceRoutes)
 app.use("/editor", formationRoutes)
 app.use("/editor", languageRoutes)
 app.use("/editor", hobbyRoutes)
+
+////////////// VIEWER ROUTES //////////////
+
+const viewerRoutes = require("./api/viewer/viewer")
+
 app.use("/viewer", viewerRoutes)
+
 
 app.use("/public", express.static(path.join(__dirname, '../public')))
 
