@@ -20,7 +20,7 @@ module.exports = {
                 }
             })
 
-            return res.status(200).json(projects)
+            return res.status(200).json(projects.projects)
 
         } catch (e) {
             console.error(e)
