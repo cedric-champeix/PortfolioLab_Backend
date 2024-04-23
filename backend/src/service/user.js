@@ -7,6 +7,12 @@ module.exports = {
     create: async (req, res) => {
         try {
             const data = req.body
+
+            const usernameRegex = /^[0-9A-Za-z]$/
+            if (!usernameRegex.test(data.username)) {
+                throw new Error("Username can only contain digits, uppercase and lowercase letters. No special characters are allowed.")
+            }
+
             const salt = await bcrypt.genSalt(NB_SALT_ROUNDS)
             let hashedPwd = await bcrypt.hash(data.pwd, salt)
 
