@@ -148,8 +148,6 @@ module.exports = {
             const {user, body} = req
             const {myProjectId} = req.params
 
-            console.log("UPDATE VISIB: ", body)
-
             await prisma.project.update({
                 where: {
                     id: myProjectId,
