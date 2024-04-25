@@ -143,6 +143,30 @@ module.exports = {
         }
     },
 
+    updateProjectVisibility: async (req, res) => {
+        try {
+            const {user} = req
+            const {myProjectId} = req.params
+            const body = req.body
+
+            await prisma.project.update({
+                where: {
+                    id: myProjectId,
+                    userId: user.id
+                },
+                data: {
+                    visible: body.visible
+                }
+            })
+
+            return res.status(200)
+
+        } catch (e) {
+            console.error(e)
+            return res.status(500).json({message: "Couldn't update project visibility."})
+        }
+    },
+
     connectSkill: async (req, res) => {
         try {
             const {myProjectId, skillId} = req.params

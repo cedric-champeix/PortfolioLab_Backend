@@ -43,6 +43,7 @@ model Project {
   id               String      @id @default(auto()) @map("_id") @db.ObjectId
   name             String
   description      String?
+  visible          Boolean     @default(false)
   MainImage        Image?      @relation("MainImage", fields: [MainImageId], references: [id])
   MainImageId      String?     @db.ObjectId
   ProjectImages    Image[]     @relation("ProjectImages", fields: [projectImagesIds], references: [id])

@@ -13,7 +13,8 @@ const {
     connectProjectImage,
     disconnectProjectImage,
     publish,
-    unpublish
+    unpublish,
+    updateProjectVisibility
 } = require("../../../service/editor/project/project");
 
 let router = new app.Router()
@@ -26,6 +27,9 @@ router.route('/projects/:myProjectId')
     .get(verifyAccessToken([Roles.Editor]), getProject)
     .put(verifyAccessToken([Roles.Editor]), updateProject)
     .delete(verifyAccessToken([Roles.Editor]), deleteProject)
+
+router.route('/projects/:myProjectId/visibility')
+    .put(verifyAccessToken([Roles.Editor]), updateProjectVisibility)
 
 router.route('/projects/:myProjectId/skills/:skillId')
     .put(verifyAccessToken([Roles.Editor]), connectSkill)
