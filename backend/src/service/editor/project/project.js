@@ -145,9 +145,10 @@ module.exports = {
 
     updateProjectVisibility: async (req, res) => {
         try {
-            const {user} = req
+            const {user, body} = req
             const {myProjectId} = req.params
-            const body = req.body
+
+            console.log("UPDATE VISIB: ", body)
 
             await prisma.project.update({
                 where: {
@@ -159,7 +160,7 @@ module.exports = {
                 }
             })
 
-            return res.status(200)
+            return res.sendStatus(200)
 
         } catch (e) {
             console.error(e)
