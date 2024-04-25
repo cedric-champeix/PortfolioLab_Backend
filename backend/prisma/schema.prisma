@@ -120,6 +120,7 @@ model Formations {
   id             String  @id @default(auto()) @map("_id") @db.ObjectId
   formationName  String
   universityName String
+  description    String?
   startDate      String
   endDate        String?
   Resume         Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)

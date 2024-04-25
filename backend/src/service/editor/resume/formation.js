@@ -43,6 +43,7 @@ module.exports = {
                 data: {
                     formationName: data.formationName,
                     universityName: data.universityName,
+                    description: data.description,
                     startDate: data.startDate,
                     endDate: data.endDate,
                     Resume: {
@@ -74,7 +75,7 @@ module.exports = {
             const formationId = req.params.formationId
 
             let valuesToModify = {}
-            const acceptable_keys = ["formationName", "universityName", "startDate", "endDate"]
+            const acceptable_keys = ["formationName", "universityName", "description", "startDate", "endDate"]
 
             for (const key of acceptable_keys) {
                 if (key in data)
