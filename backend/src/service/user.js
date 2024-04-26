@@ -8,8 +8,9 @@ module.exports = {
         try {
             const data = req.body
 
-            const usernameRegex = /^[0-9A-Za-z]$/
+            const usernameRegex = /^\w+$/
             if (!usernameRegex.test(data.username)) {
+                console.log(data.username)
                 throw new Error("Username can only contain digits, uppercase and lowercase letters. No special characters are allowed.")
             }
 
