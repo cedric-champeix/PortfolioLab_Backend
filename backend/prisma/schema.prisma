@@ -80,7 +80,9 @@ model Resume {
   User        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String       @unique @db.ObjectId
   published   Boolean      @default(false)
+  publishedData Json?
 }
+
 
 model Skill {
   id          String    @id @default(auto()) @map("_id") @db.ObjectId
@@ -134,6 +136,7 @@ model Contact {
   text     String
   Resume   Resume? @relation(fields: [resumeId], references: [id], onDelete: Cascade)
   resumeId String? @db.ObjectId
+
   user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId   String  @db.ObjectId
 

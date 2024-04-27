@@ -236,17 +236,40 @@ module.exports = {
     publish: async (req, res) => {
         try {
             const id = req.user.id
+            //The goal is to retrieve the resume data and duplicate it into "resume.publishedData"
+            //So we fetch the data, delete the attributes we do not want and feed the data into the published data
+
+            const data =await prisma.resume.findUnique({
+                where: {
+                    userId: id
+                },
+                include: {
+                    skills: true,
+                    experiences: true,
+                    formations: true,
+                    hobbies: true,
+                    languages: true,
+                    contacts: true,
+                    Image: true
+                }
+            })
+            //We delete the unnecessary attributes
+            delete(data.publishedData)
+            delete(data.published)
+            delete(data.userId)
+            delete(data.id)
+            //Updating the resume
             await prisma.resume.update({
                 where:{
                     userId: id
                 },
                 data: {
-                    published: true
+                    published: true,
+                    publishedData: data
                 }
             })
 
             return res.sendStatus(200)
-
 
         } catch (e) {
             console.error(e)
@@ -256,15 +279,16 @@ module.exports = {
     unpublish: async (req, res) => {
         try {
             const id = req.user.id
+            //To unpublish, we delete the published data simply.
             await prisma.resume.update({
                 where:{
                     userId: id
                 },
                 data: {
-                    published: false
+                    published: false,
+                    publishedData: {}
                 }
             })
-
             return res.sendStatus(200)
 
         } catch (e) {
