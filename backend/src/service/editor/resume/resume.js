@@ -15,8 +15,9 @@ module.exports = {
                         {
                             include: {
                                 Image: true,
-                                User: true
+                                User: true,
                             }
+
                         }
                 }
             })
