@@ -17,21 +17,17 @@ module.exports = {
              */
             const published = await prisma.user.findUnique({
                 where: {
-                    username: username
-                },
-                select: {
+                    username: username,
                     resume: {
-                        select: {
-                            published: true
-                        }
+                        published: true
                     }
-                }
+                },
             })
             /*
              * If the resume is private, we notify the client that the resume is unpublished
              */
-            if(!published.resume.published){
-                return res.status(200).json({message: "The user's resume is not available publicly"})
+            if(!published){
+                return res.status(200).json({published: false})
             }
 
             /*
@@ -69,17 +65,14 @@ module.exports = {
              * STEP 3 : treat the data
              * Wire the published data into the resume
              */
-            userResume.resume.skills = userResume.resume.publishedData.skills
-            userResume.resume.experiences= userResume.resume.publishedData.experiences
-            userResume.resume.contacts= userResume.resume.publishedData.contacts
-            userResume.resume.formations= userResume.resume.publishedData.formations
-            userResume.resume.languages= userResume.resume.publishedData.languages
-            userResume.resume.hobbies= {...userResume.resume.publishedData.hobbies, "test": true}
-            userResume.resume.Image= userResume.resume.publishedData.Image
+            console.log("UserResume : ", userResume.resume.publishedData)
+
+            userResume.resume = {...userResume.resume.publishedData}
+
+            userResume.published = true
 
             //Now the published data is wired into the resume, so we do not need it
             delete(userResume.resume.publishedData)
-            console.log("UserResume : ", userResume)
 
             return res.status(200).json(userResume)
 
