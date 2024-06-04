@@ -1,6 +1,4 @@
 const prisma = require('./client')
-const exclude = require("./../utils/exclude")
-const {del} = require("express/lib/application");
 /**
  * The goal of this request is to provide the information of a user in readonly, if and only if the user authorized and published its resume
  *
