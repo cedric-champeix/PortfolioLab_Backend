@@ -15,7 +15,7 @@ module.exports = {
                         {
                             include: {
                                 Image: true,
-                                User: true,
+                                User: true
                             }
 
                         }
@@ -28,6 +28,40 @@ module.exports = {
 
             //console.log("Get resume: ", resume)
             return res.status(200).json(resume.resume)
+
+        } catch (e) {
+            console.error(e)
+            return res.status(500).json({message: "Couldn't get resume."})
+        }
+    },
+
+    getFullResume: async (req, res) => {
+        try {
+            const user = req.user
+
+            const userResume = await prisma.user.findUnique({
+                where: {
+                    id: user.id
+                },
+                select: {
+                    firstName: true,
+                    lastName: true,
+                    resume: {
+                        include: {
+                            Image: true,
+                            skills: true,
+                            experiences: true,
+                            formations: true,
+                            languages: true,
+                            hobbies: true,
+                            contacts: true,
+                        }
+
+                    }
+                }
+            })
+
+            return res.status(200).json(userResume)
 
         } catch (e) {
             console.error(e)
@@ -84,7 +118,7 @@ module.exports = {
 
             await prisma.$transaction([deleteResume, createResume])
 
-            console.log("Reset of ", req.user.username,"'s resume.")
+            console.log("Reset of ", req.user.username, "'s resume.")
 
             return res.status(200).json({message: "The resume was successfully reset."})
         } catch (e) {
@@ -240,7 +274,7 @@ module.exports = {
             //The goal is to retrieve the resume data and duplicate it into "resume.publishedData"
             //So we fetch the data, delete the attributes we do not want and feed the data into the published data
 
-            const data =await prisma.resume.findUnique({
+            const data = await prisma.resume.findUnique({
                 where: {
                     userId: id
                 },
@@ -255,13 +289,13 @@ module.exports = {
                 }
             })
             //We delete the unnecessary attributes
-            delete(data.publishedData)
-            delete(data.published)
-            delete(data.userId)
-            delete(data.id)
+            delete (data.publishedData)
+            delete (data.published)
+            delete (data.userId)
+            delete (data.id)
             //Updating the resume
             await prisma.resume.update({
-                where:{
+                where: {
                     userId: id
                 },
                 data: {
@@ -282,7 +316,7 @@ module.exports = {
             const id = req.user.id
             //To unpublish, we delete the published data simply.
             await prisma.resume.update({
-                where:{
+                where: {
                     userId: id
                 },
                 data: {

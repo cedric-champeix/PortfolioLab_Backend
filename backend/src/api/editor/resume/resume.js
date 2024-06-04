@@ -1,6 +1,6 @@
 const app = require("express")
 const {
-    getResume, updateResume, resetResume, connectImage, disconnectImage, connectSkill, disconnectSkill, connectSocial, disconnectSocial,
+    getResume, getFullResume, updateResume, resetResume, connectImage, disconnectImage, connectSkill, disconnectSkill, connectSocial, disconnectSocial,
     publish,
     unpublish
 } = require("../../../service/editor/resume/resume")
@@ -12,6 +12,9 @@ router.route('/resume')
     .get(verifyAccessToken([Roles.Editor]), getResume)
     .put(verifyAccessToken([Roles.Editor]), updateResume)
     .delete(verifyAccessToken([Roles.Editor]), resetResume)
+
+router.route('/resume/preview')
+    .get(verifyAccessToken([Roles.Editor]), getFullResume)
 
 router.route('/resume/image/:imageId')
     .put(verifyAccessToken([Roles.Editor]), connectImage)
