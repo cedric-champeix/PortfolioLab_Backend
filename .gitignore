@@ -15,6 +15,7 @@ dist-ssr
 mongodb_rs
 docker-compose.yml
 .env
+public
 
 # Editor directories and files
 .vscode/*
