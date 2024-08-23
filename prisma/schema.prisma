@@ -12,7 +12,7 @@ model User {
   email      String       @unique
   username   String       @unique
   pwd        String
-  role       String
+  role       Role         @default(EDITOR)
   firstName  String
   lastName   String
   address    Address?
@@ -67,28 +67,27 @@ model Component {
 }
 
 model Resume {
-  id          String       @id @default(auto()) @map("_id") @db.ObjectId
-  description String?
-  title       String?
-  Image       Image?       @relation("ResumeImage", fields: [ImageId], references: [id])
-  ImageId     String?      @db.ObjectId
-  skills      Skill[]
-  contacts    Contact[]
-  experiences Experience[]
-  formations  Formations[]
-  languages   Language[]
-  hobbies     Hobby[]
-  User        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String       @unique @db.ObjectId
-  published   Boolean      @default(false)
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  description   String?
+  title         String?
+  Image         Image?       @relation("ResumeImage", fields: [ImageId], references: [id])
+  ImageId       String?      @db.ObjectId
+  skills        Skill[]
+  contacts      Contact[]
+  experiences   Experience[]
+  formations    Formations[]
+  languages     Language[]
+  hobbies       Hobby[]
+  User          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String       @unique @db.ObjectId
+  published     Boolean      @default(false)
   publishedData Json?
 }
-
 
 model Skill {
   id          String    @id @default(auto()) @map("_id") @db.ObjectId
   name        String
-  mastery     String
+  description String
   logoURL     String?
   isSoft      Boolean
   Resume      Resume?   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
@@ -139,8 +138,8 @@ model Contact {
   Resume   Resume? @relation(fields: [resumeId], references: [id], onDelete: Cascade)
   resumeId String? @db.ObjectId
 
-  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId   String  @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @db.ObjectId
 
   @@unique([title, userId])
 }
@@ -177,3 +176,7 @@ type Address {
   country String
 }
 
+enum Role {
+  ADMIN
+  EDITOR
+}
