@@ -26,7 +26,7 @@ const getResume = async (req: Request, res: Response) => {
          * If the resume is private, we notify the client that the resume is unpublished
          */
         if (!published) {
-            return res.status(200).json({published: false})
+            return res.status(404).json({published: false})
         }
 
         /*
