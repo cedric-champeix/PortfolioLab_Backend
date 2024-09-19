@@ -1,62 +1,62 @@
-import {Request, Response} from "express";
-import {prisma} from "../client";
-
+import { Request, Response } from 'express';
+import { prisma } from '../client';
 
 const getAllSkills = async (req: Request, res: Response) => {
     try {
-        const user = req.user
-        const data = req.query
+        const user = req.user;
+        const data = req.query;
 
         const filter: Record<string, any> = {
-            userId: user.id
-        }
+            userId: user.id,
+        };
 
         if (data.resumeId) {
-            filter.resumeId = data.resumeId
+            filter.resumeId = data.resumeId;
         } else if (data.projectId) {
             filter.projectsIds = {
                 has: data.projectId,
-            }
+            };
         }
 
         const skills = await prisma.skill.findMany({
-            where: filter
-        })
+            where: filter,
+        });
 
-        return res.status(200).json(skills)
+        return res.status(200).json(skills);
     } catch (e) {
-        return res.status(500).json({message: "Couldn't get skills."})
+        console.error('Error getting skills: ', e);
+        return res.status(500).json({ message: "Couldn't get skills." });
     }
 };
 
 const getSkill = async (req: Request, res: Response) => {
     try {
-        const skillId = req.params.skillId
+        const skillId = req.params.skillId;
 
         const skill = await prisma.skill.findUnique({
             where: {
-                id: skillId
-            }
-        })
+                id: skillId,
+            },
+        });
 
-        return res.status(200).json(skill)
-
+        return res.status(200).json(skill);
     } catch (e) {
-        return res.status(500).json({message: "Couldn't get skill."})
+        console.error('Error getting skill: ', e);
+        return res.status(500).json({ message: "Couldn't get skill." });
     }
 };
 
 const createSkill = async (req: Request, res: Response) => {
     try {
-        const data = req.body
+        const data = req.body;
 
-        if (!("resumeId" in data)) {
+        if (!('resumeId' in data)) {
             data.Resume = {};
         } else {
-            data.Resume = {connect: {id: data.resumeId}};
+            data.Resume = { connect: { id: data.resumeId } };
         }
 
-        if (!("Projects" in data)) {
+        if (!('Projects' in data)) {
             data.Projects = [];
         }
 
@@ -67,73 +67,69 @@ const createSkill = async (req: Request, res: Response) => {
                 isSoft: data.isSoft,
                 Resume: data.Resume,
                 Projects: {
-                    connect: data.Projects
+                    connect: data.Projects,
                 },
                 user: {
                     connect: {
-                        id: req.user.id
-                    }
-                }
-            }
-        })
+                        id: req.user.id,
+                    },
+                },
+            },
+        });
 
-        console.log("Created skill: ", skill)
-        return res.status(200).json(skill)
-
+        console.log('Created skill: ', skill);
+        return res.status(200).json(skill);
     } catch (e) {
-        console.error(e)
-        return res.status(500).json({message: "Couldn't create skill."})
+        console.error(e);
+        return res.status(500).json({ message: "Couldn't create skill." });
     }
 };
 
 const updateSkill = async (req: Request, res: Response) => {
     try {
-        const data = req.body
-        const skillId = req.params.skillId
+        const data = req.body;
+        const skillId = req.params.skillId;
 
-        let valuesToModify: Record<string, any> = {}
-        const acceptable_keys = ["name", "description", "isSoft"]
+        const valuesToModify: Record<string, any> = {};
+        const acceptable_keys = ['name', 'description', 'isSoft'];
 
         for (const key of acceptable_keys) {
-            if (key in data)
-                valuesToModify[key] = data[key]
+            if (key in data) valuesToModify[key] = data[key];
         }
 
         const skill = await prisma.skill.update({
             where: {
                 id: skillId,
-                userId: req.user.id
+                userId: req.user.id,
             },
-            data: valuesToModify
-        })
+            data: valuesToModify,
+        });
 
-        console.log("Updated skill:", skill)
-        return res.status(200).json(skill)
-
+        console.log('Updated skill:', skill);
+        return res.status(200).json(skill);
     } catch (e) {
-        console.error(e)
-        return res.status(500).json({message: "Couldn't update skill."})
+        console.error(e);
+        return res.status(500).json({ message: "Couldn't update skill." });
     }
 };
 
 const deleteSkill = async (req: Request, res: Response) => {
     try {
-        const skillId = req.params.skillId
+        const skillId = req.params.skillId;
 
         await prisma.skill.delete({
             where: {
                 id: skillId,
-                userId: req.user.id
-            }
-        })
+                userId: req.user.id,
+            },
+        });
 
-        console.log(`Skill deleted: ${skillId}`)
-        return res.sendStatus(200)
-
+        console.log(`Skill deleted: ${skillId}`);
+        return res.sendStatus(200);
     } catch (e) {
-        console.error(e)
-        return res.status(500).json({message: "Couldn't delete skill."})
+        console.error(e);
+        return res.status(500).json({ message: "Couldn't delete skill." });
     }
 };
 
-export {getAllSkills, getSkill, createSkill, updateSkill, deleteSkill}
+export { createSkill, deleteSkill, getAllSkills, getSkill, updateSkill };

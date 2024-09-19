@@ -1,12 +1,11 @@
-import {Router} from "express";
-import {getPortfolio, getProject, getResume} from "../../service/viewer";
+import { Router } from 'express';
+import { getPortfolio, getProject, getResume } from '../../service/viewer';
 
+const viewerRouter = Router();
 
-const viewerRouter = Router()
+viewerRouter.route('/:username/resume').get(getResume);
 
-viewerRouter.route("/:username/resume").get(getResume)
+viewerRouter.route('/:username/projects').get(getPortfolio);
+viewerRouter.route('/:username/projects/:projectId').get(getProject);
 
-viewerRouter.route("/:username/projects").get(getPortfolio)
-viewerRouter.route("/:username/projects/:projectId").get(getProject)
-
-export {viewerRouter}
+export { viewerRouter };

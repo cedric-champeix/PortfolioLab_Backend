@@ -1,23 +1,25 @@
-import {Router} from "express";
-import {Role} from "@prisma/client";
-import {verifyAccessToken} from "../../../service/auth/jwt";
+import { Role } from '@prisma/client';
+import { Router } from 'express';
+import { verifyAccessToken } from '../../../service/auth/jwt';
 import {
     createLanguage,
     deleteLanguage,
     getAllLanguages,
     getLanguage,
-    updateLanguage
-} from "../../../service/editor/resume/language";
+    updateLanguage,
+} from '../../../service/editor/resume/language';
 
-const languageRouter = Router()
+const languageRouter = Router();
 
-languageRouter.route("/languages")
+languageRouter
+    .route('/languages')
     .get(verifyAccessToken([Role.EDITOR]), getAllLanguages)
-    .post(verifyAccessToken([Role.EDITOR]), createLanguage)
+    .post(verifyAccessToken([Role.EDITOR]), createLanguage);
 
-languageRouter.route("/languages/:languageId")
+languageRouter
+    .route('/languages/:languageId')
     .get(verifyAccessToken([Role.EDITOR]), getLanguage)
     .put(verifyAccessToken([Role.EDITOR]), updateLanguage)
-    .delete(verifyAccessToken([Role.EDITOR]), deleteLanguage)
+    .delete(verifyAccessToken([Role.EDITOR]), deleteLanguage);
 
-export {languageRouter}
+export { languageRouter };

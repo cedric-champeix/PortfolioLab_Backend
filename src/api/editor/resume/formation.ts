@@ -1,23 +1,25 @@
-import {Router} from "express";
-import {Role} from "@prisma/client";
-import {verifyAccessToken} from "../../../service/auth/jwt";
+import { Role } from '@prisma/client';
+import { Router } from 'express';
+import { verifyAccessToken } from '../../../service/auth/jwt';
 import {
-    createFormation, deleteFormation,
+    createFormation,
+    deleteFormation,
     getAllFormations,
     getFormations,
-    updateFormation
-} from "../../../service/editor/resume/formation";
+    updateFormation,
+} from '../../../service/editor/resume/formation';
 
+const formationRouter = Router();
 
-const formationRouter = Router()
-
-formationRouter.route("/formations")
+formationRouter
+    .route('/formations')
     .get(verifyAccessToken([Role.EDITOR]), getAllFormations)
-    .post(verifyAccessToken([Role.EDITOR]), createFormation)
+    .post(verifyAccessToken([Role.EDITOR]), createFormation);
 
-formationRouter.route("/formations/:formationId")
+formationRouter
+    .route('/formations/:formationId')
     .get(verifyAccessToken([Role.EDITOR]), getFormations)
     .put(verifyAccessToken([Role.EDITOR]), updateFormation)
-    .delete(verifyAccessToken([Role.EDITOR]), deleteFormation)
+    .delete(verifyAccessToken([Role.EDITOR]), deleteFormation);
 
-export {formationRouter}
+export { formationRouter };

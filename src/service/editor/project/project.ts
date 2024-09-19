@@ -1,110 +1,106 @@
-import {Request, Response} from "express";
-import {prisma} from "../../client";
+import { Request, Response } from 'express';
+import { prisma } from '../../client';
 
 const getAllProjects = async (req: Request, res: Response) => {
     try {
-        const user = req.user
+        const user = req.user;
 
-        let userProjects = await prisma.user.findUnique({
+        const userProjects = await prisma.user.findUnique({
             where: {
-                id: user.id
+                id: user.id,
             },
             select: {
                 projects: {
                     include: {
                         MainImage: true,
-                        skills: true
-                    }
-                }
-            }
-        })
+                        skills: true,
+                    },
+                },
+            },
+        });
 
         if (!userProjects?.projects) {
-            return res.status(200).json([])
+            return res.status(200).json([]);
         }
 
-        return res.status(200).json(userProjects.projects)
-
+        return res.status(200).json(userProjects.projects);
     } catch (e) {
-        console.error(e)
-        return res.status(500).json({message: "Couldn't get projects."})
+        console.error(e);
+        return res.status(500).json({ message: "Couldn't get projects." });
     }
 };
 
 const getProject = async (req: Request, res: Response) => {
     try {
-        const user = req.user
-        const {myProjectId} = req.params
+        const user = req.user;
+        const { myProjectId } = req.params;
 
-        let project = await prisma.project.findUnique({
+        const project = await prisma.project.findUnique({
             where: {
                 id: myProjectId,
-                userId: user.id
+                userId: user.id,
             },
             include: {
                 components: {
                     orderBy: {
-                        index: "asc"
-                    }
+                        index: 'asc',
+                    },
                 },
                 skills: true,
                 MainImage: true,
-                ProjectImages: true
-            }
-        })
+                ProjectImages: true,
+            },
+        });
 
-        return res.status(200).json(project)
-
+        return res.status(200).json(project);
     } catch (e) {
-        console.error("Error when accessing project: ", e)
-        return res.status(500).json({message: "Couldn't get project."})
+        console.error('Error when accessing project: ', e);
+        return res.status(500).json({ message: "Couldn't get project." });
     }
 };
 
 const createProject = async (req: Request, res: Response) => {
     try {
-        const {user} = req
-        const body = req.body
+        const { user } = req;
+        const body = req.body;
 
         const project = await prisma.project.create({
             data: {
                 name: body.name,
                 User: {
                     connect: {
-                        id: user.id
-                    }
-                }
-            }
-        })
+                        id: user.id,
+                    },
+                },
+            },
+        });
 
-        return res.status(200).json(project)
+        return res.status(200).json(project);
     } catch (e) {
-        console.error(e)
-        return res.status(500).json({message: "Couldn't create project."})
+        console.error(e);
+        return res.status(500).json({ message: "Couldn't create project." });
     }
 };
 
 const updateProject = async (req: Request, res: Response) => {
     try {
-        const {user} = req
-        const {myProjectId} = req.params
-        const body = req.body
+        const { user } = req;
+        const { myProjectId } = req.params;
+        const body = req.body;
 
-        let valuesToModify: Record<string, any> = {}
+        const valuesToModify: Record<string, any> = {};
 
-        const acceptable_keys = ["name", "description", "contributors"]
+        const acceptable_keys = ['name', 'description', 'contributors'];
         for (const key of acceptable_keys) {
-
             if (key in body) {
-                valuesToModify[key] = body[key]
+                valuesToModify[key] = body[key];
             }
         }
-
 
         const project = await prisma.project.update({
             where: {
                 id: myProjectId,
-                userId: user.id
+                userId: user.id,
             },
             data: valuesToModify,
             include: {
@@ -113,259 +109,261 @@ const updateProject = async (req: Request, res: Response) => {
                 ProjectImages: true,
                 components: {
                     orderBy: {
-                        index: "asc"
-                    }
+                        index: 'asc',
+                    },
                 },
-            }
-        })
+            },
+        });
 
-        return res.status(200).json(project)
-
+        return res.status(200).json(project);
     } catch (e) {
-        console.error(e)
-        return res.status(500).json({message: "Couldn't update project."})
+        console.error(e);
+        return res.status(500).json({ message: "Couldn't update project." });
     }
 };
 
 const deleteProject = async (req: Request, res: Response) => {
     try {
-        const user = req.user
-        const {myProjectId} = req.params
+        const user = req.user;
+        const { myProjectId } = req.params;
 
         await prisma.project.delete({
             where: {
                 id: myProjectId,
-                userId: user.id
-            }
-        })
+                userId: user.id,
+            },
+        });
 
-        return res.sendStatus(200)
+        return res.sendStatus(200);
     } catch (e) {
-        console.error(e)
-        return res.status(500).json({message: "Couldn't delete project."})
+        console.error(e);
+        return res.status(500).json({ message: "Couldn't delete project." });
     }
 };
 
 const updateProjectVisibility = async (req: Request, res: Response) => {
     try {
-        const {user, body} = req
-        const {myProjectId} = req.params
+        const { user, body } = req;
+        const { myProjectId } = req.params;
 
         await prisma.project.update({
             where: {
                 id: myProjectId,
-                userId: user.id
+                userId: user.id,
             },
             data: {
-                visible: body.visible
-            }
-        })
+                visible: body.visible,
+            },
+        });
 
-        return res.sendStatus(200)
-
+        return res.sendStatus(200);
     } catch (e) {
-        console.error(e)
-        return res.status(500).json({message: "Couldn't update project visibility."})
+        console.error(e);
+        return res
+            .status(500)
+            .json({ message: "Couldn't update project visibility." });
     }
 };
 
 const connectSkill = async (req: Request, res: Response) => {
     try {
-        const {myProjectId, skillId} = req.params
+        const { myProjectId, skillId } = req.params;
 
         await prisma.project.update({
             where: {
                 id: myProjectId,
-                userId: req.user.id
+                userId: req.user.id,
             },
             data: {
                 skills: {
-                    connect: {id: skillId}
-                }
-            }
-        })
+                    connect: { id: skillId },
+                },
+            },
+        });
 
-        return res.sendStatus(200)
-
+        return res.sendStatus(200);
     } catch (e) {
-        console.error(e)
-        return res.status(500).json({message: "Couldn't connect skill."})
+        console.error(e);
+        return res.status(500).json({ message: "Couldn't connect skill." });
     }
 };
 
 const disconnectSkill = async (req: Request, res: Response) => {
     try {
-        const {myProjectId, skillId} = req.params
+        const { myProjectId, skillId } = req.params;
 
         await prisma.project.update({
             where: {
                 id: myProjectId,
-                userId: req.user.id
+                userId: req.user.id,
             },
             data: {
                 skills: {
-                    disconnect: {id: skillId}
-                }
-            }
-        })
+                    disconnect: { id: skillId },
+                },
+            },
+        });
 
-        return res.sendStatus(200)
-
+        return res.sendStatus(200);
     } catch (e) {
-        console.error(e)
-        return res.status(500).json({message: "Couldn't disconnect skill."})
+        console.error(e);
+        return res.status(500).json({ message: "Couldn't disconnect skill." });
     }
 };
 
 const connectMainImage = async (req: Request, res: Response) => {
     try {
-        const {myProjectId, imageId} = req.params
+        const { myProjectId, imageId } = req.params;
 
         await prisma.project.update({
             where: {
                 id: myProjectId,
-                userId: req.user.id
+                userId: req.user.id,
             },
             data: {
                 MainImage: {
-                    connect: {id: imageId}
-                }
-            }
-        })
+                    connect: { id: imageId },
+                },
+            },
+        });
 
-        return res.sendStatus(200)
+        return res.sendStatus(200);
     } catch (e) {
-        console.error(e)
-        return res.status(500).json({message: "Couldn't connect main image."})
+        console.error(e);
+        return res
+            .status(500)
+            .json({ message: "Couldn't connect main image." });
     }
 };
 
 const disconnectMainImage = async (req: Request, res: Response) => {
     try {
-        const {myProjectId} = req.params
+        const { myProjectId } = req.params;
 
         await prisma.project.update({
             where: {
                 id: myProjectId,
-                userId: req.user.id
+                userId: req.user.id,
             },
             data: {
                 MainImage: {
-                    disconnect: true
-                }
-            }
-        })
+                    disconnect: true,
+                },
+            },
+        });
 
-        return res.sendStatus(200)
+        return res.sendStatus(200);
     } catch (e) {
-        console.error(e)
-        return res.status(500).json({message: "Couldn't disconnect main image."})
+        console.error(e);
+        return res
+            .status(500)
+            .json({ message: "Couldn't disconnect main image." });
     }
 };
 
 const connectProjectImage = async (req: Request, res: Response) => {
     try {
-        const {myProjectId, imageId} = req.params
+        const { myProjectId, imageId } = req.params;
 
         await prisma.project.update({
             where: {
                 id: myProjectId,
-                userId: req.user.id
+                userId: req.user.id,
             },
             data: {
                 ProjectImages: {
-                    connect: [{id: imageId}]
-                }
-            }
-        })
+                    connect: [{ id: imageId }],
+                },
+            },
+        });
 
-        return res.sendStatus(200)
+        return res.sendStatus(200);
     } catch (e) {
-        console.error(e)
-        return res.status(500).json({message: "Couldn't connect image."})
+        console.error(e);
+        return res.status(500).json({ message: "Couldn't connect image." });
     }
 };
 
 const disconnectProjectImage = async (req: Request, res: Response) => {
     try {
-        const {myProjectId, imageId} = req.params
+        const { myProjectId, imageId } = req.params;
 
         await prisma.project.update({
             where: {
                 id: myProjectId,
-                userId: req.user.id
+                userId: req.user.id,
             },
             data: {
                 ProjectImages: {
                     disconnect: {
-                        id: imageId
-                    }
-                }
-            }
-        })
+                        id: imageId,
+                    },
+                },
+            },
+        });
 
-        return res.sendStatus(200)
+        return res.sendStatus(200);
     } catch (e) {
-        console.error(e)
-        return res.status(500).json({message: "Couldn't disconnect image."})
+        console.error(e);
+        return res.status(500).json({ message: "Couldn't disconnect image." });
     }
 };
 
 const publish = async (req: Request, res: Response) => {
     try {
-        const {myProjectId} = req.params
-        const {user} = req
+        const { myProjectId } = req.params;
+        const { user } = req;
 
         const publish = await prisma.project.update({
             where: {
                 userId: user.id,
-                id: myProjectId
-            }, data: {
-                published: true
-            }
-        })
-        return res.status(200).json(publish)
-
+                id: myProjectId,
+            },
+            data: {
+                published: true,
+            },
+        });
+        return res.status(200).json(publish);
     } catch (e) {
-        console.error(e)
-        return res.status(500).json({message: "Couldn't update project."})
+        console.error(e);
+        return res.status(500).json({ message: "Couldn't update project." });
     }
 };
 
 const unpublish = async (req: Request, res: Response) => {
     try {
-        const {myProjectId} = req.params
-        const {user} = req
+        const { myProjectId } = req.params;
+        const { user } = req;
 
         const publish = await prisma.project.update({
             where: {
                 userId: user.id,
-                id: myProjectId
-            }, data: {
-                published: false
-            }
-        })
-        return res.status(200).json(publish)
-
+                id: myProjectId,
+            },
+            data: {
+                published: false,
+            },
+        });
+        return res.status(200).json(publish);
     } catch (e) {
-        console.error(e)
-        return res.status(500).json({message: "Couldn't update project."})
+        console.error(e);
+        return res.status(500).json({ message: "Couldn't update project." });
     }
 };
 
 export {
+    connectMainImage,
+    connectProjectImage,
+    connectSkill,
+    createProject,
+    deleteProject,
+    disconnectMainImage,
+    disconnectProjectImage,
+    disconnectSkill,
     getAllProjects,
     getProject,
-    createProject,
-    updateProject,
-    deleteProject,
-    updateProjectVisibility,
-    connectProjectImage,
-    disconnectProjectImage,
-    connectMainImage,
-    disconnectMainImage,
-    connectSkill,
-    disconnectSkill,
     publish,
-    unpublish
+    unpublish,
+    updateProject,
+    updateProjectVisibility,
 };

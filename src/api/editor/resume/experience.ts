@@ -1,24 +1,25 @@
-import {Router} from "express";
-import {Role} from "@prisma/client";
-import {verifyAccessToken} from "../../../service/auth/jwt";
+import { Role } from '@prisma/client';
+import { Router } from 'express';
+import { verifyAccessToken } from '../../../service/auth/jwt';
 import {
-    createExperience, deleteExperience,
+    createExperience,
+    deleteExperience,
     getAllExperience,
     getExperience,
-    updateExperience
-} from "../../../service/editor/resume/experience";
+    updateExperience,
+} from '../../../service/editor/resume/experience';
 
+const experienceRouter = Router();
 
-const experienceRouter = Router()
-
-experienceRouter.route("/experiences")
+experienceRouter
+    .route('/experiences')
     .get(verifyAccessToken([Role.EDITOR]), getAllExperience)
-    .post(verifyAccessToken([Role.EDITOR]), createExperience)
+    .post(verifyAccessToken([Role.EDITOR]), createExperience);
 
-experienceRouter.route("/experiences/:experienceId")
+experienceRouter
+    .route('/experiences/:experienceId')
     .get(verifyAccessToken([Role.EDITOR]), getExperience)
     .put(verifyAccessToken([Role.EDITOR]), updateExperience)
-    .delete(verifyAccessToken([Role.EDITOR]), deleteExperience)
+    .delete(verifyAccessToken([Role.EDITOR]), deleteExperience);
 
-
-export {experienceRouter}
+export { experienceRouter };
